@@ -1,4 +1,5 @@
 import { BaseModelInterface } from '../base.model';
 
-export interface UserInterface extends BaseModelInterface{
+export interface User extends BaseModelInterface{
+  username: string
 }

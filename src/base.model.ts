@@ -1,5 +1,4 @@
 export interface BaseModelInterface {
-  name: string,
+  user: string,
   image: object,
-  id?: number
 }

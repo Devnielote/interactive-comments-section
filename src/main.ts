@@ -10,10 +10,20 @@
 //Crear una interface base que deben respetar todos los usuarios y comentarios que se generen.
 
 import * as data from "../data.json";
-import {UserInterface } from './users/user.model';
+import { User } from './users/user.model';
+import { createComment, updateComment, replyToComment, DeleteComment, existingComments } from "./comments/comment.services";
 
 
-const yourUser:UserInterface = {
-  name : data.currentUser.username,
-  image : data.currentUser.image,
-}
+// Pasar esto a su UserDto
+// const yourUser:User = {
+//   user : data.currentUser.username,
+//   image : data.currentUser.image,
+// }
+
+// Pasar esto a su UserDto
+
+// data.comments.forEach(el => {
+//   createComment(el)
+// });
+
+//TODO: Definir la interface de user que recibira la interface de Comment

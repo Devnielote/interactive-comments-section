@@ -1,8 +1,9 @@
 import { BaseModelInterface } from '../base.model';
 
-export interface CommentInterface extends BaseModelInterface {
+export interface Comment extends BaseModelInterface {
+  id: number,
   comment: string,
-  createAt: Date,
+  createdAt: Date,
   score: number,
-  replies: string[],
+  replies: Omit<Comment, 'replies'>[],
 };

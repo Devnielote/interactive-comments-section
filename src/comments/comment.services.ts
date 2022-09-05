@@ -1,11 +1,11 @@
-import { CreateCommentDto, ReplyCommentDto, UpdateCommentDto } from "./comments.dto";
+import { CreateCommentDto, UpdateCommentDto } from "./comments.dto";
 import { Comment } from "./comment.model";
 
 export const existingComments: Comment[] = [];
 
-export const createComment = ( data: CreateCommentDto ): Comment => {
+export const createComment = ( data: CreateCommentDto ) => {
   const newComment = {
-    ...data,
+    ...data
   }
 
   existingComments.push(newComment);
@@ -13,26 +13,21 @@ export const createComment = ( data: CreateCommentDto ): Comment => {
   return newComment;
 }
 
-export const updateComment = (id:Comment['id'], changes: UpdateCommentDto): Comment => {
+export const updateComment = (id:Comment['id'], changes: UpdateCommentDto['comment']) => {
   const index = existingComments.findIndex(el => el.id === id);
 
   const prevComment = existingComments[index];
-  existingComments[index] = {
-    ...prevComment,
-    ...changes
-  }
+  prevComment.comment = changes;
 
   return existingComments[index];
 }
 
-export const replyToComment = (id:Comment['id'], reply: ReplyCommentDto):Comment => {
+export const replyToComment = (id:Comment['id'], reply: Comment) => {
 
   const index = existingComments.findIndex(el => el.id === id);
-
   const replyingTo = existingComments[index];
-
-  replyingTo.replies.push(reply);
-
+  reply.replyingToUser = replyingTo.user.username;
+  replyingTo.replies?.push(reply);
   return existingComments[index];
 }
 

@@ -1,1 +1,1 @@
-const App = document.querySelector('#App');
+export const App = document.querySelector('#App');

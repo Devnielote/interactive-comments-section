@@ -1,9 +1,9 @@
 import { User } from "../users/user.model";
 
 export interface Comment {
-  id: number,
+  id: number | string,
   comment: string,
-  createdAt: string,
+  createdAt: Date,
   score: number,
   user:User,
   replies?:Comment[],

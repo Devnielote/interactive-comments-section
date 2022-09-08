@@ -1,5 +1,4 @@
-import { BaseModelInterface } from '../base.model';
-
-export interface User extends BaseModelInterface{
-  username: string
+export interface User {
+  username: string,
+  image: string
 }

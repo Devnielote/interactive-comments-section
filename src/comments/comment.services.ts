@@ -4,6 +4,7 @@ import { Comment } from "./comment.model";
 export const existingComments: Comment[] = [];
 
 export const createComment = ( data: CreateCommentDto ) => {
+
   const newComment = {
     ...data
   }
@@ -15,7 +16,6 @@ export const createComment = ( data: CreateCommentDto ) => {
 
 export const updateComment = (id:Comment['id'], changes: UpdateCommentDto['comment']) => {
   const index = existingComments.findIndex(el => el.id === id);
-
   const prevComment = existingComments[index];
   prevComment.comment = changes;
 
@@ -31,7 +31,7 @@ export const replyToComment = (id:Comment['id'], reply: Comment) => {
   return existingComments[index];
 }
 
-export const DeleteComment = (id: Comment['id']) => {
+export const eraseComment = (id: Comment['id']) => {
   const index = existingComments.findIndex(el => el.id === id);
   if(index > -1){
     existingComments.splice(index, 1);

@@ -11,14 +11,22 @@
       sizes="32x32"
       href="./images/favicon-32x32.png"
     /> -->
-    <link rel="stylesheet" href="./src/normalize.css" />
-    <link rel="stylesheet" href="./src/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/css/normalize.css" />
+    <link rel="stylesheet" href="./src/css/main.css" />
 
     <title>Interactive comments section</title>
   </head>
   <body>
     <main class="container">
-      <div class="app" id="App"></div>
+      <div class="app" id="App">
+        <!-- App rendering by JS -->
+      </div>
     </main>
     <script src="./dist/bundle.js"></script>
   </body>

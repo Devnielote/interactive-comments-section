@@ -1,7 +1,14 @@
 import { CreateCommentDto, UpdateCommentDto } from "./comments.dto";
 import { Comment } from "./comment.model";
+import { User } from "../users/user.model";
+import { faker } from "@faker-js/faker";
 
 export const existingComments: Comment[] = [];
+
+export const currentUser: User = {
+  image: faker.image.avatar(),
+  username: 'You'
+}
 
 export const createComment = ( data: CreateCommentDto ) => {
 
@@ -22,7 +29,7 @@ export const updateComment = (id:Comment['id'], changes: UpdateCommentDto['comme
   return existingComments[index];
 }
 
-export const replyToComment = (id:Comment['id'], reply: Comment) => {
+export const reply = (id:Comment['id'], reply: Comment) => {
 
   const index = existingComments.findIndex(el => el.id === id);
   const replyingTo = existingComments[index];

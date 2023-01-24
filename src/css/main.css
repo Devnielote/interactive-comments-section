@@ -21,17 +21,22 @@
 
 body {
   background-color: var(--Very-ligh-gray);
+  font-family: 'Rubik', sans-serif;
 }
 
 .app {
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
 .comment__container {
   position: relative;
+  width: 100%;
+  min-width: 320px;
+  max-width: 700px;
+  margin: 0 auto;
   height: auto;
-  margin-bottom: 2rem;
-  padding: .8rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
   background-color: var(--White);
   border-radius: .3rem;
 }
@@ -50,10 +55,13 @@ body {
 .comment__profile p {
   padding-top: .9rem;
   font-size: 16px;
+  font-weight: 700;
 }
 
 .comment__profile p:nth-child(3) {
   margin-left: auto;
+  font-weight: 400;
+  color: var(--Grayish-Blue);
 }
 
 .comment__box {
@@ -61,13 +69,15 @@ body {
 }
 
 .comment__box p {
-  font-weight: 200;
+  font-weight: 400;
+  color: var(--Grayish-Blue);
 }
 
 .replyScore__container {
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
+  font-weight: 700;
 }
 
 .score__container {
@@ -91,3 +101,58 @@ body {
   color: var(--Moderate-blue);
 }
 
+.deleteEditBtnContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.deleteEditBtnContainer div {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.deleteEditBtnContainer div img {
+  margin-right: 5px;
+}
+
+.deleteEditBtnContainer div:nth-child(1) {
+  margin-right: 15px;
+  color: var(--Soft-Red);
+}
+.deleteEditBtnContainer div:nth-child(2) {
+  margin-right: 10px;
+  color: var(--Moderate-blue);
+}
+
+
+
+.currentUser__commentBox input {
+  width: 100%;
+  height: 6rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: solid 1px var(--Light-gray);
+}
+
+.profileAndBtn__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.send__button {
+  width: 5rem;
+  height: 2rem;
+  border: none;
+  font-size: .9rem;
+  border-radius: .3rem;
+  background-color: var(--Moderate-blue);
+  color: var(--White);
+}
+
+.disable {
+  display: none;
+}

@@ -1,16 +1,17 @@
 // import * as data from "./data.json";
 // import { User } from './users/user.model';
-import { createComment, updateComment, replyToComment, eraseComment, existingComments } from "./comments/comment.services";
+import { createComment, updateComment, reply, eraseComment, existingComments, currentUser } from "./comments/comment.services";
 import { faker } from '@faker-js/faker';
-import { timeDiff } from "./utils/timeDiff";
 import { App } from "./nodes";
 import * as _ from 'lodash';
 import scoreUpIcon from './images/icon-plus.svg';
 import scoreDownIcon from './images/icon-minus.svg';
 import replyIcon from './images/icon-reply.svg';
+import deleteIcon from './images/icon-delete.svg';
+import editIcon from './images/icon-edit.svg';
+import TimeDiff from 'js-time-diff';
 
-
-const generateComments = () => {
+const generateComment = () => {
   createComment({
     id: faker.datatype.uuid(),
     comment: faker.lorem.paragraph(),
@@ -18,7 +19,7 @@ const generateComments = () => {
     score: 0,
     user:{
     "image": faker.image.avatar(),
-    "username": faker.internet.userName()
+    "username": faker.name.firstName()
       },
     replies: []
   });
@@ -31,26 +32,28 @@ const newComment = (comment: string) => {
     createdAt: new Date(),
     score: 0,
     user:{
-    "image": "./images/avatars/image-amyrobson.png",
-    "username": "Daniel"
+    "image": currentUser.image,
+    "username": currentUser.username
       },
     replies: []
-  })
+  });
+  loadComments();
+  addCommentBox();
 }
 
-const reply = (id: number, comment: string) => {
+const replyToComment = (id: number, comment: string) => {
   if(!id){
     console.log('Comment not found')
   } else {
-    replyToComment(id,
+    reply(id,
       {
         id: faker.datatype.uuid(),
         comment: comment,
         createdAt: new Date(),
         score: 0,
         user: {
-          "image": "./images/avatars/image-juliusomo.png",
-          "username": 'Daniel',
+          "image": currentUser.image,
+          "username": currentUser.username,
         },
     });
   }
@@ -79,15 +82,16 @@ const deleteComment = (id: number) => {
   }
 }
 
-const loadComments = () => {
-  for(let i = 0; i < 10; i++){
-    generateComments();
+const addCommentsToArray = () => {
+  for(let i = 0; i < 4; i++){
+    generateComment();
   }
 }
 
-const addCommentBox = () => {
+const loadComments = () => {
+  App
   existingComments.forEach(el => {
-    const date = timeDiff(el.createdAt, new Date()).toString();
+    const date = TimeDiff(el.createdAt, new Date()).toString();
 
     const commentContainer = document.createElement('div');
     commentContainer.className = 'comment__container';
@@ -132,16 +136,97 @@ const addCommentBox = () => {
     replyText.innerText = 'Reply';
     replyContainer.append(reply, replyText);
 
+    replyContainer.addEventListener('click', () => {
+      addCommentBox()
+    })
+
     //reply and score container for mobiles
     const replyScoreContainer = document.createElement('div');
     replyScoreContainer.className = 'replyScore__container';
     replyScoreContainer.append(scoreContainer, replyContainer);
 
-    commentContainer.append(profileInfo,commentBox, replyScoreContainer);
+     //delete and edit buttons
+    if(el.user.username === currentUser.username) {
 
-    App?.appendChild(commentContainer);
+    replyContainer.classList.add('disable');
+
+    const deleteEditBtnContainer = document.createElement('div');
+    deleteEditBtnContainer.className = 'deleteEditBtnContainer';
+    const deleteBtn = document.createElement('div');
+    const deleteBtnImg = document.createElement('img');
+    deleteBtnImg.src = deleteIcon;
+    deleteBtn.innerText = 'Delete';
+    deleteBtn.appendChild(deleteBtnImg);
+
+    const editBtn = document.createElement('div');
+    const editBtnImg = document.createElement('img');
+    editBtnImg.src = editIcon;
+    editBtn.innerText = 'Edit';
+    editBtn.appendChild(editBtnImg);
+    deleteEditBtnContainer.append(deleteBtn, editBtn);
+
+    replyScoreContainer.append(deleteEditBtnContainer);
+
+    commentContainer.append(profileInfo,commentBox,replyScoreContainer);
+
+    } else {
+      commentContainer.append(profileInfo,commentBox, replyScoreContainer);
+    }
+
+
+
+    App.appendChild(commentContainer);
   })
+
 }
 
+const addCommentBox = () => {
+  const addCommentContainer = document.createElement('div');
+  addCommentContainer.classList.add('comment__container');
+  addCommentContainer.classList.add('currentUser__container');
+
+  //current user comment box
+  const inputContainer = document.createElement('div');
+  inputContainer.className = 'currentUser__commentBox'
+  const input = document.createElement('input');
+  input.id = 'inputValue';
+  input.type = 'text';
+  input.placeholder = 'Add a comment...';
+  inputContainer.appendChild(input);
+
+  //Container for pic and send button in mobiles
+  const picAndSendBtnContainer = document.createElement('div');
+  picAndSendBtnContainer.className = 'profileAndBtn__container';
+
+  //current user profile pic
+  const currentUserContainer = document.createElement('div');
+  currentUserContainer.className = 'comment__profile';
+  const currentUserPic = document.createElement('img');
+  currentUserPic.src = currentUser.image;
+  currentUserContainer.appendChild(currentUserPic);
+
+  //send button
+  const button = document.createElement('button');
+  button.className = 'send__button';
+  button.innerText = 'SEND';
+  button.addEventListener('click', () => {
+    if(!input.value.length){
+      alert('Write something...')
+    } else {
+      App.innerText = '';
+      newComment(input.value)
+    }
+  })
+
+  picAndSendBtnContainer.append(currentUserContainer, button);
+
+
+  addCommentContainer.append(inputContainer,picAndSendBtnContainer);
+
+  App.appendChild(addCommentContainer);
+}
+
+
+addCommentsToArray();
 loadComments();
 addCommentBox();

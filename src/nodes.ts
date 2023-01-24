@@ -1,1 +1,1 @@
-export const App = document.querySelector('#App');
+export const App: any = document.querySelector('#App');

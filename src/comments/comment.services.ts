@@ -17,16 +17,12 @@ export const createComment = ( data: CreateCommentDto ) => {
   }
 
   existingComments.push(newComment);
-
-  return newComment;
 }
 
 export const updateComment = (id:Comment['id'], changes: UpdateCommentDto['comment']) => {
   const index = existingComments.findIndex(el => el.id === id);
   const prevComment = existingComments[index];
   prevComment.comment = changes;
-
-  return existingComments[index];
 }
 
 export const reply = (id:Comment['id'], reply: Comment) => {

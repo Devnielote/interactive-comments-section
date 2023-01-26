@@ -10,27 +10,18 @@ import replyIcon from './images/icon-reply.svg';
 import deleteIcon from './images/icon-delete.svg';
 import editIcon from './images/icon-edit.svg';
 import TimeDiff from 'js-time-diff';
-
-const generateComment = () => {
-  createComment({
-    id: faker.datatype.uuid(),
-    comment: faker.lorem.paragraph(),
-    createdAt: faker.date.past(),
-    score: 0,
-    user:{
-    "image": faker.image.avatar(),
-    "username": faker.name.firstName()
-      },
-    replies: []
-  });
-}
+import "./css/normalize.css";
+import "./css/main.css";
 
 const newComment = (comment: string) => {
   createComment({
     id: faker.datatype.uuid(),
     comment: comment,
     createdAt: new Date(),
-    score: 0,
+    score: faker.datatype.number({
+      'min': 1,
+      'max': 20,
+    }),
     user:{
     "image": currentUser.image,
     "username": currentUser.username
@@ -41,7 +32,7 @@ const newComment = (comment: string) => {
   addCommentBox();
 }
 
-const replyToComment = (id: number, comment: string) => {
+const replyToComment = (id: number, comment: string ) => {
   if(!id){
     console.log('Comment not found')
   } else {
@@ -59,17 +50,17 @@ const replyToComment = (id: number, comment: string) => {
   }
 }
 
-const update = (id: number, newComment: string) => {
+const update = (id: number | string, newComment: string | null) => {
   const index = existingComments.findIndex(el => el.id === id);
   const commentToUpdate = existingComments[index];
-  if(commentToUpdate.user.username === 'Daniel'){
+  if(commentToUpdate.user.username === 'You'){
     updateComment(
       id,
       newComment
     )
-  } else {
-    console.log("You only can update your own comments")
-  }
+  };
+  loadComments();
+  addCommentBox();
 }
 
 const deleteComment = (id: number) => {
@@ -82,14 +73,32 @@ const deleteComment = (id: number) => {
   }
 }
 
-const addCommentsToArray = () => {
+const randomCommetns = () => {
   for(let i = 0; i < 4; i++){
-    generateComment();
+    createComment({
+      id: faker.datatype.uuid(),
+      comment: faker.lorem.paragraph(),
+      createdAt: faker.date.past(),
+      score: faker.datatype.number({
+        'min': 1,
+        'max': 20,
+      }),
+      user:{
+      "image": faker.image.avatar(),
+      "username": faker.name.firstName()
+        },
+      replies: []
+    });
   }
 }
 
+const sortComments = () => {
+  existingComments.sort((a,b) => b.score - a.score);;
+}
+
 const loadComments = () => {
-  App
+  sortComments();
+  App.innerText = '';
   existingComments.forEach(el => {
     const date = TimeDiff(el.createdAt, new Date()).toString();
 
@@ -163,6 +172,12 @@ const loadComments = () => {
     editBtnImg.src = editIcon;
     editBtn.innerText = 'Edit';
     editBtn.appendChild(editBtnImg);
+    editBtn.addEventListener('click', () => {
+      let editedComment =  prompt('Editing comment');
+      if(editedComment !== el.comment){
+        update(el.id, editedComment);
+      }
+    })
     deleteEditBtnContainer.append(deleteBtn, editBtn);
 
     replyScoreContainer.append(deleteEditBtnContainer);
@@ -172,9 +187,6 @@ const loadComments = () => {
     } else {
       commentContainer.append(profileInfo,commentBox, replyScoreContainer);
     }
-
-
-
     App.appendChild(commentContainer);
   })
 
@@ -226,7 +238,6 @@ const addCommentBox = () => {
   App.appendChild(addCommentContainer);
 }
 
-
-addCommentsToArray();
+randomCommetns();
 loadComments();
 addCommentBox();

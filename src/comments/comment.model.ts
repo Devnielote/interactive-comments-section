@@ -2,7 +2,7 @@ import { User } from "../users/user.model";
 
 export interface Comment {
   id: number | string,
-  comment: string,
+  comment: string | null,
   createdAt: Date,
   score: number,
   user:User,

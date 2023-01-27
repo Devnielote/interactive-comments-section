@@ -26,11 +26,11 @@ export const updateComment = (id:Comment['id'], changes: UpdateCommentDto['comme
 }
 
 export const reply = (id:Comment['id'], reply: Comment) => {
-
   const index = existingComments.findIndex(el => el.id === id);
   const replyingTo = existingComments[index];
-  reply.replyingToUser = replyingTo.user.username;
+  // reply.replyingToUser = replyingTo.user.username;
   replyingTo.replies?.push(reply);
+  console.log(replyingTo.replies);
   return existingComments[index];
 }
 

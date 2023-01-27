@@ -32,7 +32,7 @@ const newComment = (comment: string) => {
   addCommentBox();
 }
 
-const replyToComment = (id: number, comment: string ) => {
+const replyToComment = (id: number | string, comment: string ) => {
   if(!id){
     console.log('Comment not found')
   } else {
@@ -41,13 +41,18 @@ const replyToComment = (id: number, comment: string ) => {
         id: faker.datatype.uuid(),
         comment: comment,
         createdAt: new Date(),
-        score: 0,
+        score: faker.datatype.number({
+          'min': 1,
+          'max': 10,
+        }),
         user: {
           "image": currentUser.image,
           "username": currentUser.username,
         },
     });
   }
+  loadComments();
+  addCommentBox();
 }
 
 const update = (id: number | string, newComment: string | null) => {
@@ -144,11 +149,10 @@ const loadComments = () => {
     const replyText = document.createElement('span');
     replyText.innerText = 'Reply';
     replyContainer.append(reply, replyText);
-
     replyContainer.addEventListener('click', () => {
-      addCommentBox()
+      let comment = prompt(`Replying to: ${el.user.username}`);
+      replyToComment(el.id, comment);
     })
-
     //reply and score container for mobiles
     const replyScoreContainer = document.createElement('div');
     replyScoreContainer.className = 'replyScore__container';
@@ -184,8 +188,49 @@ const loadComments = () => {
 
     commentContainer.append(profileInfo,commentBox,replyScoreContainer);
 
+
     } else {
       commentContainer.append(profileInfo,commentBox, replyScoreContainer);
+    }
+
+    //Después de que todo cargue buscamos replies
+    if(el.replies.length >= 1){
+      console.log(`El comentario de ${el.user.username} tiene respuestas`)
+      el.replies.map(el => {
+        const newReplyContainer = document.createElement('div');
+        newReplyContainer.className = 'comment__container';
+
+        const profileInfo = document.createElement('div');
+        profileInfo.className = 'comment__profile';
+        const profilePic = document.createElement('img');
+        profilePic.src = el.user.image;
+        const profileUserName = document.createElement('p');
+        const profileUserNameText = document.createTextNode(`${el.user.username}`);
+        profileUserName.appendChild(profileUserNameText);
+        const commentDate = document.createElement('p');
+        const commentDateText = document.createTextNode(date)
+        commentDate.appendChild(commentDateText);
+        profileInfo.append(profilePic,profileUserName,commentDate);
+
+        const commentBox = document.createElement('div');
+        commentBox.className = 'comment__box';
+        const commentBoxText = document.createElement('p');
+        commentBoxText.innerText = `${el.comment}`;
+        commentBox.appendChild(commentBoxText);
+
+        const scoreContainer = document.createElement('div');
+        scoreContainer.className = 'score__container';
+        const score = document.createElement('span');
+        score.innerText = `${el.score}`;
+        const scoreUp = document.createElement('img');
+        scoreUp.src = `${scoreUpIcon}`;
+        const scoreDown = document.createElement('img');
+        scoreDown.src = `${scoreDownIcon}`;
+        scoreContainer.append(scoreUp,score,scoreDown);
+
+        newReplyContainer.append(profileInfo, commentBox,scoreContainer)
+        commentContainer.append(newReplyContainer);
+      })
     }
     App.appendChild(commentContainer);
   })
@@ -225,7 +270,6 @@ const addCommentBox = () => {
     if(!input.value.length){
       alert('Write something...')
     } else {
-      App.innerText = '';
       newComment(input.value)
     }
   })

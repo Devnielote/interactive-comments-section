@@ -11,3 +11,4 @@ export interface UpdateCommentDto extends Omit<Comment, | 'score' | 'replies' | 
 
 export interface DeleteCommentDto extends Partial<Comment> {
 }
+

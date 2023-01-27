@@ -68,14 +68,14 @@ const update = (id: number | string, newComment: string | null) => {
   addCommentBox();
 }
 
-const deleteComment = (id: number) => {
+const deleteComment = (id: number | string) => {
   const index = existingComments.findIndex(el => el.id === id);
   const commentToDelete = existingComments[index];
-  if(commentToDelete.user.username === 'Daniel'){
+  if(commentToDelete.user.username === 'You'){
     eraseComment(id);
-  } else {
-    console.log('You only can delete your own comments');
   }
+  loadComments();
+  addCommentBox();
 }
 
 const randomCommetns = () => {
@@ -119,7 +119,7 @@ const loadComments = () => {
     const profileUserNameText = document.createTextNode(`${el.user.username}`);
     profileUserName.appendChild(profileUserNameText);
     const commentDate = document.createElement('p');
-    const commentDateText = document.createTextNode(date)
+    const commentDateText = document.createTextNode(date);
     commentDate.appendChild(commentDateText);
     profileInfo.append(profilePic,profileUserName,commentDate);
 
@@ -170,6 +170,7 @@ const loadComments = () => {
     deleteBtnImg.src = deleteIcon;
     deleteBtn.innerText = 'Delete';
     deleteBtn.appendChild(deleteBtnImg);
+    deleteBtn.addEventListener('click', () => deleteComment(el.id));
 
     const editBtn = document.createElement('div');
     const editBtnImg = document.createElement('img');

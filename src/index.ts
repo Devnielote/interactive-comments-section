@@ -208,7 +208,7 @@ const loadComments = () => {
         const profileUserNameText = document.createTextNode(`${el.user.username}`);
         profileUserName.appendChild(profileUserNameText);
         const commentDate = document.createElement('p');
-        const commentDateText = document.createTextNode(date)
+        const commentDateText = document.createTextNode(TimeDiff(el.createdAt, new Date()).toString());
         commentDate.appendChild(commentDateText);
         profileInfo.append(profilePic,profileUserName,commentDate);
 

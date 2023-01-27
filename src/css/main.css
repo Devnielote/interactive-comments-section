@@ -99,6 +99,7 @@ body {
   justify-content: space-evenly;
   width: 5rem;
   color: var(--Moderate-blue);
+  cursor: pointer;
 }
 
 .deleteEditBtnContainer {
@@ -111,6 +112,7 @@ body {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
+  cursor: pointer;
 }
 
 .deleteEditBtnContainer div img {
@@ -151,6 +153,7 @@ body {
   border-radius: .3rem;
   background-color: var(--Moderate-blue);
   color: var(--White);
+  cursor: pointer;
 }
 
 .disable {

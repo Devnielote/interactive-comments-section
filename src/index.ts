@@ -57,7 +57,7 @@ const newComment = (comment: string) => {
 const replyToComment = (id: number | string, comment: string ) => {
   if(!id){
     console.log('Comment not found')
-  } else {
+  } else if (comment.length > 0 || !comment == null) {
     reply(id,
       {
         id: faker.datatype.uuid(),
@@ -72,6 +72,8 @@ const replyToComment = (id: number | string, comment: string ) => {
           "username": currentUser.username,
         },
     });
+  } else {
+    alert('An error has ocurred, please try later');
   }
   loadComments();
   addCommentBox();
@@ -80,12 +82,14 @@ const replyToComment = (id: number | string, comment: string ) => {
 const update = (id: number | string, newComment: string | null) => {
   const index = existingComments.findIndex(el => el.id === id);
   const commentToUpdate = existingComments[index];
-  if(commentToUpdate.user.username === 'You'){
+  if(commentToUpdate.user.username === 'You' && newComment.length > 0 || !newComment === null){
     updateComment(
       id,
       newComment
     )
-  };
+  } else {
+    alert('An error has ocurred, please try later');
+  }
   loadComments();
   addCommentBox();
 }

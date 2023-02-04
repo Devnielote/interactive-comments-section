@@ -13,6 +13,28 @@ import TimeDiff from 'js-time-diff';
 import "./css/normalize.css";
 import "./css/main.css";
 
+// const createModal = () => {
+//   const modalBg = document.createElement('div');
+//   modalBg.className = 'modal__bg';
+//   const modalContainer = document.createElement('div');
+//   modalContainer.className = 'modal';
+//   const modalInfo = document.createElement('div');
+//   const modalInfoTitle = document.createTextNode(`Delete comment`);
+//   const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone`);
+//   const modalBtnContainer = document.createElement('div');
+//   modalBtnContainer.className = 'btn__container';
+//   const modalNoBtn = document.createElement('div');
+//   const modalYesBtn = document.createElement('div');
+
+//   modalNoBtn.innerText = 'NO, CANCEL';
+//   modalYesBtn.innerText = 'YES, DELETE';
+//   modalBtnContainer.append(modalNoBtn, modalYesBtn);
+//   modalInfo.append(modalInfoTitle, modalInfoText);
+//   modalContainer.append(modalInfo, modalBtnContainer);
+//   modalBg.append(modalContainer);
+//   App.appendChild(modalContainer);
+// }
+
 const newComment = (comment: string) => {
   createComment({
     id: faker.datatype.uuid(),
@@ -72,6 +94,7 @@ const deleteComment = (id: number | string) => {
   const index = existingComments.findIndex(el => el.id === id);
   const commentToDelete = existingComments[index];
   if(commentToDelete.user.username === 'You'){
+
     eraseComment(id);
   }
   loadComments();
@@ -100,6 +123,7 @@ const randomCommetns = () => {
 const sortComments = () => {
   existingComments.sort((a,b) => b.score - a.score);;
 }
+
 
 const loadComments = () => {
   sortComments();
@@ -163,14 +187,48 @@ const loadComments = () => {
 
     replyContainer.classList.add('disable');
 
-    const deleteEditBtnContainer = document.createElement('div');
-    deleteEditBtnContainer.className = 'deleteEditBtnContainer';
-    const deleteBtn = document.createElement('div');
-    const deleteBtnImg = document.createElement('img');
-    deleteBtnImg.src = deleteIcon;
-    deleteBtn.innerText = 'Delete';
-    deleteBtn.appendChild(deleteBtnImg);
-    deleteBtn.addEventListener('click', () => deleteComment(el.id));
+      const deleteEditBtnContainer = document.createElement('div');
+      deleteEditBtnContainer.className = 'deleteEditBtnContainer';
+      const deleteBtn = document.createElement('div');
+      const deleteBtnImg = document.createElement('img');
+      deleteBtnImg.src = deleteIcon;
+      deleteBtn.innerText = 'Delete';
+      deleteBtn.appendChild(deleteBtnImg);
+      deleteBtn.addEventListener('click', () => {
+      document.documentElement.scrollTop = 0
+      const modalBg = document.createElement('div');
+      modalBg.className = 'modal__bg';
+      const modalContainer = document.createElement('div');
+      modalContainer.className = 'modal';
+      const modalInfo = document.createElement('div');
+      modalInfo.className = 'modal__info';
+      const modalInfoTitle = document.createTextNode(`Delete comment`);
+      const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
+      const modalInfoTitleContainer = document.createElement('p');
+      modalInfoTitleContainer.append(modalInfoTitle)
+      const modalInfoTextContainer = document.createElement('p');
+      modalInfoTextContainer.append(modalInfoText)
+      const modalBtnContainer = document.createElement('div');
+      modalBtnContainer.className = 'btn__container';
+      const modalNoBtn = document.createElement('div');
+      const modalYesBtn = document.createElement('div');
+
+      modalNoBtn.innerText = 'NO, CANCEL';
+      modalYesBtn.innerText = 'YES, DELETE';
+      modalBtnContainer.append(modalNoBtn, modalYesBtn);
+      modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
+      modalContainer.append(modalInfo, modalBtnContainer);
+      App.append(modalBg,modalContainer);
+
+      modalYesBtn.addEventListener('click', () =>  {
+        deleteComment(el.id)
+      })
+      modalNoBtn.addEventListener('click', () => {
+        modalBg.className = 'disable';
+        modalContainer.className = 'disable';
+      })
+
+    });
 
     const editBtn = document.createElement('div');
     const editBtnImg = document.createElement('img');

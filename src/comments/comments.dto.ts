@@ -9,6 +9,4 @@ export interface UpdateCommentDto extends Omit<Comment, | 'score' | 'replies' | 
   updateAt: Date;
 }
 
-export interface DeleteCommentDto extends Partial<Comment> {
-}
 

@@ -30,7 +30,6 @@ export const reply = (id:Comment['id'], reply: Comment) => {
   const replyingTo = existingComments[index];
   // reply.replyingToUser = replyingTo.user.username;
   replyingTo.replies?.push(reply);
-  console.log(replyingTo.replies);
   return existingComments[index];
 }
 

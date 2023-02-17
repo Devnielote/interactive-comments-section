@@ -12,33 +12,23 @@ import editIcon from './images/icon-edit.svg';
 import TimeDiff from 'js-time-diff';
 import "./css/normalize.css";
 import "./css/main.css";
+import { Account } from "./accounts/Account";
+import { Comment, CommentTypeEnum } from "./comments/comment.model";
+import { getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
-// const createModal = () => {
-//   const modalBg = document.createElement('div');
-//   modalBg.className = 'modal__bg';
-//   const modalContainer = document.createElement('div');
-//   modalContainer.className = 'modal';
-//   const modalInfo = document.createElement('div');
-//   const modalInfoTitle = document.createTextNode(`Delete comment`);
-//   const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone`);
-//   const modalBtnContainer = document.createElement('div');
-//   modalBtnContainer.className = 'btn__container';
-//   const modalNoBtn = document.createElement('div');
-//   const modalYesBtn = document.createElement('div');
-
-//   modalNoBtn.innerText = 'NO, CANCEL';
-//   modalYesBtn.innerText = 'YES, DELETE';
-//   modalBtnContainer.append(modalNoBtn, modalYesBtn);
-//   modalInfo.append(modalInfoTitle, modalInfoText);
-//   modalContainer.append(modalInfo, modalBtnContainer);
-//   modalBg.append(modalContainer);
-//   App.appendChild(modalContainer);
-// }
+// const testUser = new Account();
+// const testComment = new Comment('Comentario de prueba',0, CommentTypeEnum.comment);
+// testUser.createComment(testComment);
+// console.log(testUser);
+// users.push(testUser);
+// setAccountsToStorage(users);
+// console.log(users);
 
 const newComment = (comment: string) => {
   createComment({
     id: faker.datatype.uuid(),
     comment: comment,
+    commentType: CommentTypeEnum.comment,
     createdAt: new Date(),
     score: faker.datatype.number({
       'min': 1,
@@ -62,6 +52,7 @@ const replyToComment = (id: number | string, comment: string ) => {
       {
         id: faker.datatype.uuid(),
         comment: comment,
+        commentType: CommentTypeEnum.comment,
         createdAt: new Date(),
         score: faker.datatype.number({
           'min': 1,
@@ -110,6 +101,7 @@ const randomCommetns = () => {
     createComment({
       id: faker.datatype.uuid(),
       comment: faker.lorem.paragraph(),
+      commentType: CommentTypeEnum.comment,
       createdAt: faker.date.past(),
       score: faker.datatype.number({
         'min': 1,
@@ -125,7 +117,7 @@ const randomCommetns = () => {
 }
 
 const sortComments = () => {
-  existingComments.sort((a,b) => b.score - a.score);;
+  existingComments.sort((a,b) => b.score - a.score);
 }
 
 

@@ -337,6 +337,8 @@ const addCommentBox = () => {
   App.appendChild(addCommentContainer);
 }
 
+console.log('Pruebita de contributions jsjs');
+
 randomCommetns();
 loadComments();
 addCommentBox();

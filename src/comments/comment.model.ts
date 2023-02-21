@@ -25,5 +25,4 @@ export class Comment implements Comment {
       this.id = getRandomId();
       this.createdAt = new Date();
   }
-
 }

@@ -23,7 +23,7 @@ export class Account implements Account {
      constructor(account: Account = {} as Account){
       this.id = account.id || getRandomId();
       this.name = account.name || faker.name.firstName();
-      this.profilePic = faker.image.avatar();
+      this.profilePic = account.profilePic || faker.image.avatar();
       this.comments = account.comments || [];
      }
 

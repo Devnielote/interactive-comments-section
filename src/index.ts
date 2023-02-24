@@ -36,9 +36,6 @@ const deleteCommentV2 = (id:number) => {
   setAccountsToStorage(users);
 }
 
-// deleteCommentV2(1559616882283);
-console.log(users);
-
 const newComment = (comment: string) => {
   createComment({
     id: faker.datatype.uuid(),

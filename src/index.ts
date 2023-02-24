@@ -16,14 +16,11 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
+const existingCommentsV2 = users.map(user => user.getComments());
+
 const newCommentV2 = (comment: string) => {
-  let newComment = new Comment(
-    comment,
-    0,
-    CommentTypeEnum.comment,
-    )
-    currentUserV2.createComment(newComment);
-    setAccountsToStorage(users);
+  currentUserV2.createComment(comment);
+  setAccountsToStorage(users);
 }
 
 const updateCommentV2 = (id:number, changes: string) => {

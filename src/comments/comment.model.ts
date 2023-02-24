@@ -5,7 +5,7 @@ export enum CommentTypeEnum {
   comment = 'Comment',
   reply = 'Reply',
 };
-export interface Comment {
+export interface Comment{
   id: number | string,
   comment: string | null,
   commentType: CommentTypeEnum,
@@ -18,6 +18,7 @@ export interface Comment {
 
 export class Comment implements Comment {
   constructor(
+    public user: User,
     public comment: string | null,
     public score: number,
     public commentType: CommentTypeEnum,

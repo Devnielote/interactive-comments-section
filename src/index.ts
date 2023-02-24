@@ -16,29 +16,28 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
-let updatedUsers: Account[] = [];
-// const testUser = new Account();
-// const testComment = new Comment('Comentario de prueba',0, CommentTypeEnum.comment);
-// testUser.createComment(testComment);
-// console.log(testUser);
-// users.push(testUser);
-// setAccountsToStorage(users);
+const existingCommentsV2 = users.map(user => user.getComments());
+// console.log(existingCommentsV2[0][0].user);
 
-const addNewComment = (comment: string) => {
-  let newComment = new Comment(
-    comment,
-    0,
-    CommentTypeEnum.comment,
-    )
-    currentUserV2.createComment(newComment);
-    setAccountsToStorage(users);
-  }
-// addNewComment('Comentario de prueba para ver si puedo guardar comentarios repetidos pero con diferente id ya que al final de cuentas son dos instancias distintas de comentario');
-// currentUserV2.updateComment(1559616882283, 'Comentario de prueba no.2 que fue modificado con los métodos implementados en la clase account');
-const updateCommentV2 = () => {
+// const newCommentV2 = (comment: string) => {
+//   let newComment = new Comment(
+//     comment,
+//     0,
+//     CommentTypeEnum.comment,
+//     )
+//     currentUserV2.createComment(newComment);
+//     setAccountsToStorage(users);
+// }
 
+const updateCommentV2 = (id:number, changes: string) => {
+  currentUserV2.updateComment(id, changes);
+  setAccountsToStorage(users);
 }
-console.log(users);
+
+const deleteCommentV2 = (id:number) => {
+  currentUserV2.deleteComment(id);
+  setAccountsToStorage(users);
+}
 
 const newComment = (comment: string) => {
   createComment({

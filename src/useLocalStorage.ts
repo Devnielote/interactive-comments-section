@@ -18,15 +18,9 @@ function createInitialAccounts():Account[] {
   let initialAccounts = [];
   for(let i = 0; i < 4; i++){
     let account = new Account();
-    let comment = new Comment(
-      faker.lorem.paragraph(),
-      faker.datatype.number({
-        'min': 1,
-        'max': 20,
-      }),
-      CommentTypeEnum.comment
-     );
-      account.createComment(comment);
+      account.createComment(
+        faker.lorem.paragraph(),
+      );
       initialAccounts.push(account);
     }
     currentUserV2 = new Account;

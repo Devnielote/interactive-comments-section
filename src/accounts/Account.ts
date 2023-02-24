@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Comment } from "../comments/comment.model";
+import { Comment, CommentTypeEnum } from "../comments/comment.model";
 import { CreateCommentDto, UpdateCommentDto } from "../comments/comments.dto";
 import { User } from "../users/user.model";
 import { getRandomId } from "../utils";
@@ -10,7 +10,7 @@ export interface Account {
   profilePic: string,
   scoredComments: number[],
 
-  createComment(data: CreateCommentDto): boolean;
+  createComment(comment: string): boolean;
   updateComment(id:Comment['id'], changes: UpdateCommentDto['comment']): boolean;
   deleteComment(id: Comment['id']): boolean;
   replyComment(comment: Comment, id: Comment['id']): boolean;
@@ -27,10 +27,17 @@ export class Account implements Account {
       this.comments = account.comments || [];
      }
 
-     createComment(data: Comment):boolean {
-      const newComment = {
-        ...data
-      }
+     createComment(comment: string):boolean {
+      const newComment = new Comment(
+        {"username": this.name,
+         "image": this.profilePic},
+         comment,
+         faker.datatype.number({
+          'min': 1,
+          'max': 20,
+        }),
+         CommentTypeEnum.comment,
+      )
       this.comments.push(newComment);
       return true;
      }
@@ -52,7 +59,7 @@ export class Account implements Account {
     }
 
     getComments(): Comment[] {
-        return this.comments;
+      return this.comments;
     }
 
 }

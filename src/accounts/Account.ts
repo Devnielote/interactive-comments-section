@@ -44,11 +44,9 @@ export class Account implements Account {
      }
 
      deleteComment = (id: Comment['id']): boolean => {
-      const index = this.comments.findIndex(el => el.id === id);
-      if(index > -1){
-        this.comments.slice(index, 1);
-      }
-      return true;
+      const filteredComments = this.comments.filter((el) => el.id !== id);
+      this.comments = filteredComments;
+      return true
     }
 
     getComments(): Comment[] {

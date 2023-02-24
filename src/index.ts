@@ -16,14 +16,6 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
-let updatedUsers: Account[] = [];
-// const testUser = new Account();
-// const testComment = new Comment('Comentario de prueba',0, CommentTypeEnum.comment);
-// testUser.createComment(testComment);
-// console.log(testUser);
-// users.push(testUser);
-// setAccountsToStorage(users);
-
 const addNewComment = (comment: string) => {
   let newComment = new Comment(
     comment,

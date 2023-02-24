@@ -17,7 +17,6 @@ import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
 const existingCommentsV2 = users.map(user => user.getComments());
-console.log(existingCommentsV2);
 
 const newCommentV2 = (comment: string) => {
   currentUserV2.createComment(comment);
@@ -28,8 +27,6 @@ const updateCommentV2 = (id:number, changes: string) => {
   currentUserV2.updateComment(id, changes);
   setAccountsToStorage(users);
 }
-
-// updateCommentV2(920163840280, 'Este comentario fue modificado utilizando el método proporcionado por class account')
 
 const deleteCommentV2 = (id:number) => {
   currentUserV2.deleteComment(id);

@@ -45,7 +45,6 @@ export class Account implements Account {
      updateComment(id:Comment['id'], changes: UpdateCommentDto['comment']): boolean {
       const index = this.comments.findIndex(el => el.id === id);
       const prevComment = this.comments[index];
-      console.log(prevComment);
       prevComment.comment = changes;
       return true;
      }

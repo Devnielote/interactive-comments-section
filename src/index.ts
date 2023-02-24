@@ -14,15 +14,31 @@ import "./css/normalize.css";
 import "./css/main.css";
 import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
-import { getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
+import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
+let updatedUsers: Account[] = [];
 // const testUser = new Account();
 // const testComment = new Comment('Comentario de prueba',0, CommentTypeEnum.comment);
 // testUser.createComment(testComment);
 // console.log(testUser);
 // users.push(testUser);
 // setAccountsToStorage(users);
-// console.log(users);
+
+const addNewComment = (comment: string) => {
+  let newComment = new Comment(
+    comment,
+    0,
+    CommentTypeEnum.comment,
+    )
+    currentUserV2.createComment(newComment);
+    setAccountsToStorage(users);
+  }
+// addNewComment('Comentario de prueba para ver si puedo guardar comentarios repetidos pero con diferente id ya que al final de cuentas son dos instancias distintas de comentario');
+// currentUserV2.updateComment(1559616882283, 'Comentario de prueba no.2 que fue modificado con los métodos implementados en la clase account');
+const updateCommentV2 = () => {
+
+}
+console.log(users);
 
 const newComment = (comment: string) => {
   createComment({
@@ -336,8 +352,6 @@ const addCommentBox = () => {
 
   App.appendChild(addCommentContainer);
 }
-
-console.log('Pruebita de contributions jsjs');
 
 randomCommetns();
 loadComments();

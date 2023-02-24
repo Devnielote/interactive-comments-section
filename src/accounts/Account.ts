@@ -31,7 +31,6 @@ export class Account implements Account {
       const newComment = {
         ...data
       }
-
       this.comments.push(newComment);
       return true;
      }

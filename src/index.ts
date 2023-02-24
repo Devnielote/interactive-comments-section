@@ -16,7 +16,7 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
-const addNewComment = (comment: string) => {
+const newCommentV2 = (comment: string) => {
   let newComment = new Comment(
     comment,
     0,
@@ -24,12 +24,19 @@ const addNewComment = (comment: string) => {
     )
     currentUserV2.createComment(newComment);
     setAccountsToStorage(users);
-  }
-// addNewComment('Comentario de prueba para ver si puedo guardar comentarios repetidos pero con diferente id ya que al final de cuentas son dos instancias distintas de comentario');
-// currentUserV2.updateComment(1559616882283, 'Comentario de prueba no.2 que fue modificado con los métodos implementados en la clase account');
-const updateCommentV2 = () => {
-
 }
+
+const updateCommentV2 = (id:number, changes: string) => {
+  currentUserV2.updateComment(id, changes);
+  setAccountsToStorage(users);
+}
+
+const deleteCommentV2 = (id:number) => {
+  currentUserV2.deleteComment(id);
+  setAccountsToStorage(users);
+}
+
+// deleteCommentV2(1559616882283);
 console.log(users);
 
 const newComment = (comment: string) => {

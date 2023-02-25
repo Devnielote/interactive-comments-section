@@ -71,6 +71,7 @@ const replyToComment = (id: number | string, comment: string ) => {
           "image": currentUser.image,
           "username": currentUser.username,
         },
+        replies: [],
     });
   } else {
     alert('An error has ocurred, please try later');

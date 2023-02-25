@@ -12,11 +12,12 @@ export interface Comment{
   createdAt: Date,
   score: number,
   user:User,
-  replies?:Comment[],
+  replies:Comment[],
 };
 
 
 export class Comment implements Comment {
+  public replies: Comment[] = [];
   constructor(
     public user: User,
     public comment: string | null,

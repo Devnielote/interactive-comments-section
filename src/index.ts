@@ -33,6 +33,11 @@ const deleteCommentV2 = (id:number) => {
   setAccountsToStorage(users);
 }
 
+const replyToCommentV2 = (db: Account[], comment: string, userId: Account['id'], commentId: Comment['id']) => {
+  currentUserV2.replyToComment(db,comment,userId,commentId);
+  setAccountsToStorage(users);
+}
+
 const newComment = (comment: string) => {
   createComment({
     id: faker.datatype.uuid(),

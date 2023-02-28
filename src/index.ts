@@ -16,7 +16,7 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
-const existingCommentsV2 = users.map(user => user.getComments());
+const existingCommentsV2: any = users.map(user => user.getComments().reduce(((r, c) => Object.assign(r, c)), {}));
 
 const newCommentV2 = (comment: string) => {
   currentUserV2.createComment(comment);
@@ -133,6 +133,7 @@ const randomCommetns = () => {
 
 const sortComments = () => {
   existingComments.sort((a,b) => b.score - a.score);
+  existingCommentsV2.sort((a: any,b: any) => b.score - a.score);
 }
 
 

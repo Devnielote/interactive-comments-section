@@ -1,6 +1,6 @@
 // import * as data from "./data.json";
 // import { User } from './users/user.model';
-import { createComment, updateComment, reply, eraseComment, existingComments, currentUser } from "./comments/comment.services";
+import { createComment, updateComment, reply, eraseComment, existingComments } from "./comments/comment.services";
 import { faker } from '@faker-js/faker';
 import { App } from "./nodes";
 import * as _ from 'lodash';
@@ -16,12 +16,20 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
+console.log('users database',users);
+
 const existingCommentsV2: any = users.map(user => user.getComments().reduce(((r, c) => Object.assign(r, c)), {}));
+const existingCommentsV3 = users.map(user => user.getComments()).reduce((a, b) => [...a, ...b], []);
+// let arrs = [[1, 2], [3, 4], [5, 6]];
+// existingCommentsV3.reduce((a, b) => [...a, ...b], []);
+console.log(existingCommentsV3);
 
 const newCommentV2 = (comment: string) => {
   currentUserV2.createComment(comment);
   setAccountsToStorage(users);
 }
+
+// newCommentV2('No te creo tio');
 
 const updateCommentV2 = (id:number, changes: string) => {
   currentUserV2.updateComment(id, changes);
@@ -34,56 +42,61 @@ const deleteCommentV2 = (id:number) => {
 }
 
 const replyToCommentV2 = (db: Account[], comment: string, userId: Account['id'], commentId: Comment['id']) => {
-  currentUserV2.replyToComment(db,comment,userId,commentId);
+  currentUserV2.replyToComment(users,comment,userId,commentId);
   setAccountsToStorage(users);
+  loadComments();
 }
 
-const newComment = (comment: string) => {
-  createComment({
-    id: faker.datatype.uuid(),
-    comment: comment,
-    commentType: CommentTypeEnum.comment,
-    createdAt: new Date(),
-    score: faker.datatype.number({
-      'min': 1,
-      'max': 20,
-    }),
-    user:{
-    "image": currentUser.image,
-    "username": currentUser.username
-      },
-    replies: []
-  });
-  loadComments();
-  addCommentBox();
-}
+console.log('existing comments',existingCommentsV2);
 
-const replyToComment = (id: number | string, comment: string ) => {
-  if(!id){
-    console.log('Comment not found')
-  } else if (comment.length > 0 || !comment == null) {
-    reply(id,
-      {
-        id: faker.datatype.uuid(),
-        comment: comment,
-        commentType: CommentTypeEnum.comment,
-        createdAt: new Date(),
-        score: faker.datatype.number({
-          'min': 1,
-          'max': 10,
-        }),
-        user: {
-          "image": currentUser.image,
-          "username": currentUser.username,
-        },
-        replies: [],
-    });
-  } else {
-    alert('An error has ocurred, please try later');
-  }
-  loadComments();
-  addCommentBox();
-}
+// const newComment = (comment: string) => {
+//   createComment({
+//     id: faker.datatype.uuid(),
+//     comment: comment,
+//     commentType: CommentTypeEnum.comment,
+//     createdAt: new Date(),
+//     score: faker.datatype.number({
+//       'min': 1,
+//       'max': 20,
+//     }),
+//     user:{
+//       "id": currentUser
+//     "image": currentUser.image,
+//     "username": currentUser.username
+//       },
+//     replies: []
+//   });
+//   loadComments();
+//   addCommentBox();
+// }
+
+
+// const replyToComment = (id: number | string, comment: string ) => {
+//   if(!id){
+//     console.log('Comment not found')
+//   } else if (comment.length > 0 || !comment == null) {
+//     reply(id,
+//       {
+//         id: faker.datatype.uuid(),
+//         comment: comment,
+//         commentType: CommentTypeEnum.comment,
+//         createdAt: new Date(),
+//         score: faker.datatype.number({
+//           'min': 1,
+//           'max': 10,
+//         }),
+//         user: {
+//           "image": currentUser.image,
+//           "username": currentUser.username,
+//         },
+//         replies: [],
+//     });
+//   } else {
+//     alert('An error has ocurred, please try later');
+//   }
+//   loadComments();
+//   addCommentBox();
+// }
 
 const update = (id: number | string, newComment: string | null) => {
   const index = existingComments.findIndex(el => el.id === id);
@@ -111,36 +124,37 @@ const deleteComment = (id: number | string) => {
   addCommentBox();
 }
 
-const randomCommetns = () => {
-  for(let i = 0; i < 4; i++){
-    createComment({
-      id: faker.datatype.uuid(),
-      comment: faker.lorem.paragraph(),
-      commentType: CommentTypeEnum.comment,
-      createdAt: faker.date.past(),
-      score: faker.datatype.number({
-        'min': 1,
-        'max': 20,
-      }),
-      user:{
-      "image": faker.image.avatar(),
-      "username": faker.name.firstName()
-        },
-      replies: []
-    });
-  }
-}
+// const randomCommetns = () => {
+//   for(let i = 0; i < 4; i++){
+//     createComment({
+//       id: faker.datatype.uuid(),
+//       comment: faker.lorem.paragraph(),
+//       commentType: CommentTypeEnum.comment,
+//       createdAt: faker.date.past(),
+//       score: faker.datatype.number({
+//         'min': 1,
+//         'max': 20,
+//       }),
+//       user:{
+//       "image": faker.image.avatar(),
+//       "username": faker.name.firstName()
+//         },
+//       replies: []
+//     });
+//   }
+// }
 
 const sortComments = () => {
-  existingComments.sort((a,b) => b.score - a.score);
-  existingCommentsV2.sort((a: any,b: any) => b.score - a.score);
+  // existingComments.sort((a,b) => b.score - a.score);
+  // existingCommentsV2.sort((a: any,b: any) => b.score - a.score);
+  existingCommentsV3.sort((a: any,b: any) => b.score - a.score);
 }
 
 
 const loadComments = () => {
   sortComments();
   App.innerText = '';
-  existingComments.forEach(el => {
+  existingCommentsV3.forEach((el:Comment) => {
     const date = TimeDiff(el.createdAt, new Date()).toString();
 
     const commentContainer = document.createElement('div');
@@ -149,6 +163,7 @@ const loadComments = () => {
     // profileInfo es el div que contiene la profilePic, username y fecha del comentario
     const profileInfo = document.createElement('div');
     profileInfo.className = 'comment__profile';
+    profileInfo.dataset.userid = `${el.user.id}`
     const profilePic = document.createElement('img');
     profilePic.src = el.user.image;
     const profileUserName = document.createElement('p');
@@ -162,6 +177,7 @@ const loadComments = () => {
     //Dentro de comment box guardamos el comentario
     const commentBox = document.createElement('div');
     commentBox.className = 'comment__box';
+    commentBox.dataset.id = `${el.id}`
     const commentBoxText = document.createElement('p');
     commentBoxText.innerText = `${el.comment}`;
     commentBox.appendChild(commentBoxText);
@@ -187,7 +203,7 @@ const loadComments = () => {
     replyContainer.append(reply, replyText);
     replyContainer.addEventListener('click', () => {
       let comment = prompt(`Replying to: ${el.user.username}`);
-      replyToComment(el.id, comment);
+      replyToCommentV2(users,comment, el.user.id,el.id);
     })
     //reply and score container for mobiles
     const replyScoreContainer = document.createElement('div');
@@ -195,7 +211,7 @@ const loadComments = () => {
     replyScoreContainer.append(scoreContainer, replyContainer);
 
      //delete and edit buttons
-    if(el.user.username === currentUser.username) {
+    if(el.user.username === currentUserV2.name) {
 
     replyContainer.classList.add('disable');
 
@@ -233,7 +249,7 @@ const loadComments = () => {
       App.append(modalBg,modalContainer);
 
       modalYesBtn.addEventListener('click', () =>  {
-        deleteComment(el.id)
+        deleteCommentV2(Number(el.id));
       })
       modalNoBtn.addEventListener('click', () => {
         modalBg.className = 'disable';
@@ -330,7 +346,7 @@ const addCommentBox = () => {
   const currentUserContainer = document.createElement('div');
   currentUserContainer.className = 'comment__profile';
   const currentUserPic = document.createElement('img');
-  currentUserPic.src = currentUser.image;
+  currentUserPic.src = currentUserV2.profilePic;
   currentUserContainer.appendChild(currentUserPic);
 
   //send button
@@ -341,7 +357,7 @@ const addCommentBox = () => {
     if(!input.value.length){
       alert('Write something...')
     } else {
-      newComment(input.value)
+      newCommentV2(input.value)
     }
   })
 
@@ -353,6 +369,6 @@ const addCommentBox = () => {
   App.appendChild(addCommentContainer);
 }
 
-randomCommetns();
+// randomCommetns();
 loadComments();
 addCommentBox();

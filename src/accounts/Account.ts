@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { Comment, CommentTypeEnum } from "../comments/comment.model";
 import { CreateCommentDto, UpdateCommentDto } from "../comments/comments.dto";
-import { User } from "../users/user.model";
+import { User, UserV2 } from "../users/user.model";
 import { getRandomId } from "../utils";
+import { users } from "../useLocalStorage";
 
 export interface Account {
   id: number,
@@ -13,7 +14,7 @@ export interface Account {
   createComment(comment: string): boolean;
   updateComment(id:Comment['id'], changes: UpdateCommentDto['comment']): boolean;
   deleteComment(id: Comment['id']): boolean;
-  replyToComment(users: Account[],comment: string, userId: Account['id'], commentId:Comment['id'] ): boolean;
+  replyToComment(users:Account[],comment: string, userId: Account['id'], commentId:Comment['id'] ): boolean;
   createReply(comment: string):Comment;
   scoreComment(comment: Comment['id']):boolean;
   getComments(): Comment[];
@@ -21,6 +22,7 @@ export interface Account {
 
 export class Account implements Account {
     private comments: Comment[];
+
      constructor(account: Account = {} as Account){
       this.id = account.id || getRandomId();
       this.name = account.name || faker.name.firstName();
@@ -30,8 +32,11 @@ export class Account implements Account {
 
      createComment(comment: string):boolean {
       const newComment = new Comment(
-        {"username": this.name,
-         "image": this.profilePic},
+        {
+          "id": this.id,
+          "username": this.name,
+         "image": this.profilePic,
+      },
          comment,
          faker.datatype.number({
           'min': 1,
@@ -45,7 +50,9 @@ export class Account implements Account {
 
      createReply(comment: string):Comment {
       const newComment = new Comment(
-        {"username": this.name,
+        {
+          "id": this.id,
+          "username": this.name,
          "image": this.profilePic},
          comment,
          faker.datatype.number({

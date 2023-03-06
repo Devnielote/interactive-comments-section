@@ -4,7 +4,7 @@ export interface User {
   image: string,
 }
 export interface UserV2 {
-  // id: number,
+  id: number,
   username: string,
   image: string,
 }

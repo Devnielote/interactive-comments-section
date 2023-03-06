@@ -1,4 +1,4 @@
-import { User } from "../users/user.model";
+import { User, UserV2 } from "../users/user.model";
 import { getRandomId } from "../utils";
 
 export enum CommentTypeEnum {
@@ -11,7 +11,7 @@ export interface Comment{
   commentType: CommentTypeEnum,
   createdAt: Date,
   score: number,
-  user:User,
+  user:UserV2,
   replies:Comment[],
 };
 
@@ -19,7 +19,7 @@ export interface Comment{
 export class Comment implements Comment {
   public replies: Comment[] = [];
   constructor(
-    public user: User,
+    public user: UserV2,
     public comment: string | null,
     public score: number,
     public commentType: CommentTypeEnum,

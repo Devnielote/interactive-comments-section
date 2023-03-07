@@ -16,17 +16,9 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
-console.log('users database',users);
-
-// const existingCommentsV2: any = users.map(user => user.getComments().reduce(((r, c) => Object.assign(r, c)), {}));
-// let arrs = [[1, 2], [3, 4], [5, 6]];
-// existingCommentsV3.reduce((a, b) => [...a, ...b], []);
-
 const fetchComments = () => {
   return users.map(user => user.getComments()).reduce((a, b) => [...a, ...b], []);
 }
-
-const existingCommentsV3 = fetchComments();
 
 const newCommentV2 = (comment: string) => {
   currentUserV2.createComment(comment);
@@ -34,7 +26,6 @@ const newCommentV2 = (comment: string) => {
   loadComments();
   addCommentBox();
 }
-
 
 const updateCommentV2 = (id:number, changes: string) => {
   currentUserV2.updateComment(id, changes);
@@ -57,102 +48,6 @@ const replyToCommentV2 = (db: Account[], comment: string, userId: Account['id'],
   addCommentBox();
 }
 
-
-// const newComment = (comment: string) => {
-//   createComment({
-//     id: faker.datatype.uuid(),
-//     comment: comment,
-//     commentType: CommentTypeEnum.comment,
-//     createdAt: new Date(),
-//     score: faker.datatype.number({
-//       'min': 1,
-//       'max': 20,
-//     }),
-//     user:{
-//       "id": currentUser
-//     "image": currentUser.image,
-//     "username": currentUser.username
-//       },
-//     replies: []
-//   });
-//   loadComments();
-//   addCommentBox();
-// }
-
-
-// const replyToComment = (id: number | string, comment: string ) => {
-//   if(!id){
-//     console.log('Comment not found')
-//   } else if (comment.length > 0 || !comment == null) {
-//     reply(id,
-//       {
-//         id: faker.datatype.uuid(),
-//         comment: comment,
-//         commentType: CommentTypeEnum.comment,
-//         createdAt: new Date(),
-//         score: faker.datatype.number({
-//           'min': 1,
-//           'max': 10,
-//         }),
-//         user: {
-//           "image": currentUser.image,
-//           "username": currentUser.username,
-//         },
-//         replies: [],
-//     });
-//   } else {
-//     alert('An error has ocurred, please try later');
-//   }
-//   loadComments();
-//   addCommentBox();
-// }
-
-const update = (id: number | string, newComment: string | null) => {
-  const index = existingComments.findIndex(el => el.id === id);
-  const commentToUpdate = existingComments[index];
-  if(commentToUpdate.user.username === 'You' && newComment.length > 0 || !newComment === null){
-    updateComment(
-      id,
-      newComment
-    )
-  } else {
-    alert('An error has ocurred, please try later');
-  }
-  loadComments();
-  addCommentBox();
-}
-
-const deleteComment = (id: number | string) => {
-  const index = existingComments.findIndex(el => el.id === id);
-  const commentToDelete = existingComments[index];
-  if(commentToDelete.user.username === 'You'){
-
-    eraseComment(id);
-  }
-  loadComments();
-  addCommentBox();
-}
-
-// const randomCommetns = () => {
-//   for(let i = 0; i < 4; i++){
-//     createComment({
-//       id: faker.datatype.uuid(),
-//       comment: faker.lorem.paragraph(),
-//       commentType: CommentTypeEnum.comment,
-//       createdAt: faker.date.past(),
-//       score: faker.datatype.number({
-//         'min': 1,
-//         'max': 20,
-//       }),
-//       user:{
-//       "image": faker.image.avatar(),
-//       "username": faker.name.firstName()
-//         },
-//       replies: []
-//     });
-//   }
-// }
-
 const sortComments = () => {
   // existingComments.sort((a,b) => b.score - a.score);
   // existingCommentsV2.sort((a: any,b: any) => b.score - a.score);
@@ -171,7 +66,6 @@ const loadComments = () => {
     // profileInfo es el div que contiene la profilePic, username y fecha del comentario
     const profileInfo = document.createElement('div');
     profileInfo.className = 'comment__profile';
-    profileInfo.dataset.userid = `${el.user.id}`
     const profilePic = document.createElement('img');
     profilePic.src = el.user.image;
     const profileUserName = document.createElement('p');
@@ -185,7 +79,6 @@ const loadComments = () => {
     //Dentro de comment box guardamos el comentario
     const commentBox = document.createElement('div');
     commentBox.className = 'comment__box';
-    commentBox.dataset.id = `${el.id}`
     const commentBoxText = document.createElement('p');
     commentBoxText.innerText = `${el.comment}`;
     commentBox.appendChild(commentBoxText);
@@ -290,7 +183,6 @@ const loadComments = () => {
 
     //Después de que todo cargue buscamos replies
     if(el.replies.length >= 1){
-      console.log(`El comentario de ${el.user.username} tiene respuestas`)
       el.replies.map(el => {
         const newReplyContainer = document.createElement('div');
         newReplyContainer.className = 'comment__container';
@@ -374,9 +266,8 @@ const addCommentBox = () => {
 
   addCommentContainer.append(inputContainer,picAndSendBtnContainer);
 
-  App.appendChild(addCommentContainer);
+  return App.appendChild(addCommentContainer);
 }
 
-// randomCommetns();
 loadComments();
 addCommentBox();

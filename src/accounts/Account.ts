@@ -1,9 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Comment, CommentTypeEnum } from "../comments/comment.model";
-import { CreateCommentDto, UpdateCommentDto } from "../comments/comments.dto";
-import { User, UserV2 } from "../users/user.model";
+import { UpdateCommentDto } from "../comments/comments.dto";
 import { getRandomId } from "../utils";
-import { users } from "../useLocalStorage";
 
 export interface Account {
   id: number,

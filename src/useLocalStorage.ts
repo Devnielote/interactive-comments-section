@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { Account } from "./accounts/Account";
-import { Comment, CommentTypeEnum } from "./comments/comment.model";
 
 export let users: Account[];
 export let currentUserV2: Account;
@@ -8,7 +7,7 @@ export let currentUserV2: Account;
 let initialUsers = getAccountsFromStorage();
 
 if(initialUsers){
-  users = generateAccountsFromLocalStorage(initialUsers); //Debo crear nuevos accounts y sus comentarios de lo que exista en el localStorage de otra forma no se instancian las clases y solo son copias sin metodos heredados.
+  users = generateAccountsFromLocalStorage(initialUsers);
   currentUserV2 = users[4];
 } else {
   initialUsers = createInitialAccounts()
@@ -39,10 +38,6 @@ export function setAccountsToStorage(account: Account []): void {
   localStorage.setItem('accounts', JSON.stringify(account));
 };
 
-export function updateCommentsInLocalStorage(accounts: Account[]): boolean{
-  return true;
-};
-
 function generateAccountsFromLocalStorage( array: Account[]): Account[] {
   let newAccounts: Account[] = [];
   array.map(acc => {
@@ -50,4 +45,3 @@ function generateAccountsFromLocalStorage( array: Account[]): Account[] {
   })
   return newAccounts;
 }
-

@@ -18,36 +18,45 @@ import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } fro
 
 console.log('users database',users);
 
-const existingCommentsV2: any = users.map(user => user.getComments().reduce(((r, c) => Object.assign(r, c)), {}));
-const existingCommentsV3 = users.map(user => user.getComments()).reduce((a, b) => [...a, ...b], []);
+// const existingCommentsV2: any = users.map(user => user.getComments().reduce(((r, c) => Object.assign(r, c)), {}));
 // let arrs = [[1, 2], [3, 4], [5, 6]];
 // existingCommentsV3.reduce((a, b) => [...a, ...b], []);
-console.log(existingCommentsV3);
+
+const fetchComments = () => {
+  return users.map(user => user.getComments()).reduce((a, b) => [...a, ...b], []);
+}
+
+const existingCommentsV3 = fetchComments();
 
 const newCommentV2 = (comment: string) => {
   currentUserV2.createComment(comment);
   setAccountsToStorage(users);
+  loadComments();
+  addCommentBox();
 }
 
-// newCommentV2('No te creo tio');
 
 const updateCommentV2 = (id:number, changes: string) => {
   currentUserV2.updateComment(id, changes);
   setAccountsToStorage(users);
+  loadComments()
+  addCommentBox()
 }
 
 const deleteCommentV2 = (id:number) => {
   currentUserV2.deleteComment(id);
   setAccountsToStorage(users);
+  loadComments()
+  addCommentBox()
 }
 
 const replyToCommentV2 = (db: Account[], comment: string, userId: Account['id'], commentId: Comment['id']) => {
   currentUserV2.replyToComment(users,comment,userId,commentId);
   setAccountsToStorage(users);
   loadComments();
+  addCommentBox();
 }
 
-console.log('existing comments',existingCommentsV2);
 
 // const newComment = (comment: string) => {
 //   createComment({
@@ -147,14 +156,13 @@ const deleteComment = (id: number | string) => {
 const sortComments = () => {
   // existingComments.sort((a,b) => b.score - a.score);
   // existingCommentsV2.sort((a: any,b: any) => b.score - a.score);
-  existingCommentsV3.sort((a: any,b: any) => b.score - a.score);
+  return fetchComments().sort((a: any,b: any) => b.score - a.score);
 }
 
 
 const loadComments = () => {
-  sortComments();
   App.innerText = '';
-  existingCommentsV3.forEach((el:Comment) => {
+  sortComments().forEach((el:Comment) => {
     const date = TimeDiff(el.createdAt, new Date()).toString();
 
     const commentContainer = document.createElement('div');
@@ -266,7 +274,7 @@ const loadComments = () => {
     editBtn.addEventListener('click', () => {
       let editedComment =  prompt('Editing comment');
       if(editedComment !== el.comment){
-        update(el.id, editedComment);
+        updateCommentV2(Number(el.id), editedComment);
       }
     })
     deleteEditBtnContainer.append(deleteBtn, editBtn);

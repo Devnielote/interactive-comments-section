@@ -155,7 +155,8 @@ body {
 }
 
 .disable {
-  display: none;
+  opacity: 50%;
+  cursor: none;
 }
 
 .modal {
@@ -237,3 +238,4 @@ body {
 .btn__container div:nth-child(2) {
   background-color: #EC6369;
 }
+

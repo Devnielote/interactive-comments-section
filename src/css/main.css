@@ -154,9 +154,13 @@ body {
   cursor: pointer;
 }
 
-.disable {
+.disable__btn {
   opacity: 50%;
   cursor: none;
+}
+
+.disable {
+  display: none;
 }
 
 .modal {

@@ -147,7 +147,7 @@ const loadComments = () => {
     replyText.innerText = 'Reply';
     replyContainer.append(reply, replyText);
     replyContainer.addEventListener('click', () => {
-      replyContainer.classList.add('disable');
+      replyContainer.classList.add('disable__btn');
       generateReplyBox(replyScoreContainer, el.user.id, Number(el.id));
       // let comment = prompt(`Replying to: ${el.user.username}`);
       // replyToCommentV2(users,comment, el.user.id,el.id);

@@ -54,6 +54,50 @@ const sortComments = () => {
   return fetchComments().sort((a: any,b: any) => b.score - a.score);
 }
 
+const generateReplyBox = (container: HTMLElement, userId: number, commentId: number) => {
+  const addCommentContainer = document.createElement('div');
+  addCommentContainer.classList.add('comment__container');
+  addCommentContainer.classList.add('currentUser__container');
+
+  //current user comment box
+  const inputContainer = document.createElement('div');
+  inputContainer.className = 'currentUser__commentBox'
+  const input = document.createElement('input');
+  input.id = 'inputValue';
+  input.type = 'text';
+  input.placeholder = 'Add a comment...';
+  inputContainer.appendChild(input);
+
+  //Container for pic and send button in mobiles
+  const picAndSendBtnContainer = document.createElement('div');
+  picAndSendBtnContainer.className = 'profileAndBtn__container';
+
+  //current user profile pic
+  const currentUserContainer = document.createElement('div');
+  currentUserContainer.className = 'comment__profile';
+  const currentUserPic = document.createElement('img');
+  currentUserPic.src = currentUserV2.profilePic;
+  currentUserContainer.appendChild(currentUserPic);
+
+  //send button
+  const button = document.createElement('button');
+  button.className = 'send__button';
+  button.innerText = 'REPLY';
+  button.addEventListener('click', () => {
+    if(!input.value.length){
+      return false
+    } else {
+      replyToCommentV2(users, input.value, userId, commentId);
+    }
+  })
+
+  picAndSendBtnContainer.append(currentUserContainer, button);
+
+
+  addCommentContainer.append(inputContainer,picAndSendBtnContainer);
+  return container.after(addCommentContainer);
+}
+
 
 const loadComments = () => {
   App.innerText = '';
@@ -103,8 +147,10 @@ const loadComments = () => {
     replyText.innerText = 'Reply';
     replyContainer.append(reply, replyText);
     replyContainer.addEventListener('click', () => {
-      let comment = prompt(`Replying to: ${el.user.username}`);
-      replyToCommentV2(users,comment, el.user.id,el.id);
+      replyContainer.classList.add('disable');
+      generateReplyBox(replyScoreContainer, el.user.id, Number(el.id));
+      // let comment = prompt(`Replying to: ${el.user.username}`);
+      // replyToCommentV2(users,comment, el.user.id,el.id);
     })
     //reply and score container for mobiles
     const replyScoreContainer = document.createElement('div');

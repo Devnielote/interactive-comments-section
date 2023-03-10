@@ -58,7 +58,27 @@ body {
   font-weight: 700;
 }
 
+.user__tag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 45px;
+  height: 20px;
+  margin-top: .7rem;
+  margin-left: .5rem;
+  padding: .8rem;
+  background-color: var(--Moderate-blue);
+  border-radius: .2rem;
+  color: white;
+}
+
 .comment__profile p:nth-child(3) {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--Grayish-Blue);
+}
+
+.comment__profile p:nth-child(4) {
   margin-left: auto;
   font-weight: 400;
   color: var(--Grayish-Blue);

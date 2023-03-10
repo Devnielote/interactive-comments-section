@@ -124,11 +124,21 @@ const loadComments = () => {
     profilePic.src = el.user.image;
     const profileUserName = document.createElement('p');
     const profileUserNameText = document.createTextNode(`${el.user.username}`);
+    const tag = document.createElement('div');
     profileUserName.appendChild(profileUserNameText);
     const commentDate = document.createElement('p');
     const commentDateText = document.createTextNode(date);
     commentDate.appendChild(commentDateText);
-    profileInfo.append(profilePic,profileUserName,commentDate);
+    if(el.user.username === currentUserV2.name){
+      const tagText = document.createElement('span');
+      const text = document.createTextNode('you');
+      tagText.append(text);
+      tag.className = 'user__tag';
+      tag.appendChild(tagText);
+      profileInfo.append(profilePic,profileUserName,tag,commentDate);
+    } else {
+      profileInfo.append(profilePic,profileUserName,commentDate);
+    }
 
     //Dentro de comment box guardamos el comentario
     const commentBox = document.createElement('div');

@@ -122,6 +122,10 @@ body {
   cursor: pointer;
 }
 
+.reply__container:hover {
+  opacity: 50%;
+}
+
 .deleteEditBtnContainer {
   display: flex;
   justify-content: space-around;
@@ -146,6 +150,10 @@ body {
 .deleteEditBtnContainer div:nth-child(2) {
   margin-right: 10px;
   color: var(--Moderate-blue);
+}
+
+.deleteEditBtnContainer div:nth-child(2):hover, .deleteEditBtnContainer div:nth-child(1):hover  {
+  opacity: 50%;
 }
 
 .currentUser__commentBox input {
@@ -175,6 +183,10 @@ body {
   background-color: var(--Moderate-blue);
   color: var(--White)!important;
   cursor: pointer;
+}
+
+.send__button:hover {
+  opacity: 50%;
 }
 
 .disable__btn {

@@ -16,6 +16,10 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 
+if(!users){
+   window.location.reload()
+};
+
 const fetchComments = () => {
   return users.map(user => user.getComments()).reduce((a, b) => [...a, ...b], []);
 }

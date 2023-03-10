@@ -98,6 +98,16 @@ const generateReplyBox = (container: HTMLElement, userId: number, commentId: num
   return container.after(addCommentContainer);
 }
 
+const generateUpdateBox = (container: HTMLElement, updateBtn: HTMLElement, commentId: number, commentText: string) => {
+  const textField = document.createElement('input');
+  textField.setAttribute('type', 'text');
+  textField.className = 'update__field';
+  textField.defaultValue = commentText;
+  container.appendChild(textField);
+  updateBtn.addEventListener('click', () => {
+    updateCommentV2(commentId, textField.value);
+  })
+}
 
 const loadComments = () => {
   App.innerText = '';
@@ -149,8 +159,6 @@ const loadComments = () => {
     replyContainer.addEventListener('click', () => {
       replyContainer.classList.add('disable__btn');
       generateReplyBox(replyScoreContainer, el.user.id, Number(el.id));
-      // let comment = prompt(`Replying to: ${el.user.username}`);
-      // replyToCommentV2(users,comment, el.user.id,el.id);
     })
     //reply and score container for mobiles
     const replyScoreContainer = document.createElement('div');
@@ -211,10 +219,10 @@ const loadComments = () => {
     editBtn.innerText = 'Edit';
     editBtn.appendChild(editBtnImg);
     editBtn.addEventListener('click', () => {
-      let editedComment =  prompt('Editing comment');
-      if(editedComment !== el.comment){
-        updateCommentV2(Number(el.id), editedComment);
-      }
+      commentBoxText.innerText = '';
+      editBtn.classList.add('send__button');
+      editBtn.innerText = 'UPDATE';
+      generateUpdateBox(commentBoxText, editBtn, Number(el.id), el.comment);
     })
     deleteEditBtnContainer.append(deleteBtn, editBtn);
 

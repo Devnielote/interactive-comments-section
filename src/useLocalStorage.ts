@@ -23,7 +23,6 @@ function createInitialAccounts():Account[] {
       initialAccounts.push(account);
     }
     currentUserV2 = new Account;
-    currentUserV2.name = 'You';
     initialAccounts.push(currentUserV2);
     localStorage.setItem('accounts', JSON.stringify(initialAccounts));
     return initialAccounts;

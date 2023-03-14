@@ -65,19 +65,24 @@ export class Account implements Account {
 
 
      updateComment(commentId:Comment['id'], commentType: CommentTypeEnum, changes: UpdateCommentDto['comment'],userId?:Account['id'], replyId?:Comment['id']): boolean {
-      if(commentType === CommentTypeEnum.comment){
+      if(changes.length !== 0){
+        if(commentType === CommentTypeEnum.comment){
         const index = this.comments.findIndex(el => el.id === commentId);
         const prevComment = this.comments[index];
         prevComment.comment = changes;
         return true;
-      } else if (commentType === CommentTypeEnum.reply){
-        const index = users.findIndex(el => el.id === userId);
-        const commentIndex = users[index].comments.findIndex(el => el.id === commentId);
-        const replyIndex = users[index].comments[commentIndex].replies.findIndex(el => el.id === replyId);
-        const prevComment = users[index].comments[commentIndex].replies[replyIndex];
-        prevComment.comment = changes;
-        return true;
+        } else if (commentType === CommentTypeEnum.reply){
+          const index = users.findIndex(el => el.id === userId);
+          const commentIndex = users[index].comments.findIndex(el => el.id === commentId);
+          const replyIndex = users[index].comments[commentIndex].replies.findIndex(el => el.id === replyId);
+          const prevComment = users[index].comments[commentIndex].replies[replyIndex];
+          prevComment.comment = changes;
+          return true;
+        }
+      } else {
+        return false;
       }
+
      }
 
      deleteComment = (id: Comment['id']): boolean => {

@@ -244,6 +244,7 @@ body {
 .disable__btn {
   opacity: 50%;
   cursor: none;
+  pointer-events: none;
 }
 
 .disable {

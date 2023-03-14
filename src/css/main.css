@@ -43,6 +43,7 @@ body {
 
 .comment__profile {
   display: flex;
+  align-items: center;
 }
 
 .comment__profile img {
@@ -52,33 +53,25 @@ body {
   border-radius: 50%;
 }
 
-.comment__profile p {
-  padding-top: .9rem;
+.comment__username  {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .user__tag {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  margin-left: .5rem;
   width: 45px;
   height: 20px;
-  margin-top: .7rem;
-  margin-left: .5rem;
-  padding: .8rem;
   background-color: var(--Moderate-blue);
   border-radius: .2rem;
   color: white;
+  text-align: center;
 }
 
-.comment__profile p:nth-child(3) {
-  margin-left: auto;
-  font-weight: 400;
-  color: var(--Grayish-Blue);
-}
-
-.comment__profile p:nth-child(4) {
+.comment__date {
   margin-left: auto;
   font-weight: 400;
   color: var(--Grayish-Blue);
@@ -91,6 +84,56 @@ body {
 .comment__box p {
   font-weight: 400;
   color: var(--Grayish-Blue);
+}
+
+.comment__content {
+  margin-top: 1rem;
+}
+
+.comment__options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.comment__deleteEdit {
+  display: flex;
+}
+
+.comment__deleteEdit button {
+  background-color: transparent;
+  border: none;
+}
+
+.comment__deleteEdit button img {
+  margin-right: .5rem;
+}
+
+.comment__deleteEdit button:first-child {
+  font-weight: bold;
+  color: var(--Soft-Red);
+  margin-right: 1rem;
+}
+
+.comment__deleteEdit button:nth-child(2) {
+  font-weight: bold;
+  color: var(--Moderate-blue);
+  margin-right: 1rem;
+}
+
+.comment__deleteEdit--active button:nth-child(2) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 5rem;
+  height: 2rem;
+  border: none;
+  font-size: .9rem;
+  border-radius: .3rem;
+  background-color: var(--Moderate-blue);
+  color: var(--White)!important;
+  cursor: pointer;
 }
 
 .replyScore__container {
@@ -107,10 +150,19 @@ body {
   width: 5rem;
   height: 2rem;
   background-color: var(--Very-ligh-gray);
+  color: var(--Moderate-blue);
+  font-weight: bold;
 }
 
-.score__container span {
+.reply__button {
+  background-color: transparent;
+  border: none;
   color: var(--Moderate-blue);
+  font-weight: bold;
+}
+
+.reply__button img {
+  margin-right: .5rem;
 }
 
 .reply__container {

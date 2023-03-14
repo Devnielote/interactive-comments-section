@@ -471,13 +471,37 @@ export function renderComments(){
   })
   //User comment score
   const scoreContainer = document.createElement('div');
+
+  const scoreUpContainer = document.createElement('div');
   const scoreUp = document.createElement('img');
   scoreUp.src = `${scoreUpIcon}`;
+  scoreUpContainer.appendChild(scoreUp);
+
+  const scoreDownContainer = document.createElement('div');
   const scoreDown = document.createElement('img');
   scoreDown.src = `${scoreDownIcon}`;
+  scoreDownContainer.appendChild(scoreDown)
   scoreContainer.classList.add('score__container');
   const score = document.createTextNode(`${el.score}`);
-  scoreContainer.append(scoreUp,score, scoreDown);
+  scoreUpContainer.addEventListener('click', () => {
+    currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,true,false);
+    setAccountsToStorage(users);
+    renderComments();
+    addCommentBox();
+  })
+  scoreDownContainer.addEventListener('click', () => {
+    if(el.score <= 0){
+      scoreDown.classList.add('disable__btn');
+    } else if( el.score > 0) {
+      currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,false,true);
+      setAccountsToStorage(users);
+      renderComments();
+      addCommentBox();
+      console.log('This thing stills working')
+    }
+  })
+  scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
+
   //User comment reply
   const userReplyButtonIcon = document.createElement('img');
   userReplyButtonIcon.src = `${replyIcon}`;
@@ -485,6 +509,7 @@ export function renderComments(){
   userReplyButton.classList.add('reply__button');
   const userReplyButtonText = document.createTextNode('Reply');
   userReplyButton.addEventListener('click', () => {
+    userReplyButton.setAttribute('disabled', 'true');
     generateReplyBox(repliesContainer, el.user.id, Number(el.id));
   })
   userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
@@ -591,13 +616,38 @@ export function renderComments(){
       deleteEditContainer.append(userDeleteButton, userEditButton);
       //User comment score
       const scoreContainer = document.createElement('div');
+
+      const scoreUpContainer = document.createElement('div');
       const scoreUp = document.createElement('img');
       scoreUp.src = `${scoreUpIcon}`;
+      scoreUpContainer.appendChild(scoreUp);
+      scoreUpContainer.addEventListener('click', () => {
+        currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,true,false, el.id);
+        setAccountsToStorage(users);
+        renderComments();
+        addCommentBox();
+      })
+
+      const scoreDownContainer = document.createElement('div');
       const scoreDown = document.createElement('img');
       scoreDown.src = `${scoreDownIcon}`;
+      scoreDownContainer.appendChild(scoreDown);
+      scoreDownContainer.addEventListener('click', () => {
+        if(el.score <= 0){
+          scoreDown.classList.add('disable__btn');
+        } else if( el.score > 0) {
+          currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,false,true, el.id);
+          setAccountsToStorage(users);
+          renderComments();
+          addCommentBox();
+          console.log('This thing stills working')
+        }
+      })
+
+
       scoreContainer.classList.add('score__container');
       const score = document.createTextNode(`${el.score}`);
-      scoreContainer.append(scoreUp,score, scoreDown);
+      scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
       //User comment reply
       const userReplyButtonIcon = document.createElement('img');
       userReplyButtonIcon.src = `${replyIcon}`;

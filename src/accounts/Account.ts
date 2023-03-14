@@ -15,7 +15,7 @@ export interface Account {
   deleteComment(id: Comment['id']): boolean;
   replyToComment(users:Account[],comment: string, userId: Account['id'], commentId:Comment['id'] ): boolean;
   createReply(comment: string):Comment;
-  scoreComment(comment: Comment['id']):boolean;
+  scoreComment(userId: Account['id'],commentId: number, commentType: CommentTypeEnum, scoreUp: boolean, scoreDown: boolean, replyId?: Comment['id']):boolean;
   getComments(): Comment[];
 }
 
@@ -107,7 +107,33 @@ export class Account implements Account {
         return true
     }
 
-    //TODO: Crear función para eliminar replies o modifcar la deleteComment fn para que acepte eliminación de replies tambien. If el.commentType = reply then hacer tal cosa.
+    scoreComment(userId: Account['id'],commentId: number, commentType: CommentTypeEnum, scoreUp: boolean, scoreDown: boolean, replyId?: Comment['id']): boolean {
+      if(commentType === CommentTypeEnum.comment){
+        const userIndex = users.findIndex(el => el.id === userId);
+        const commentIndex = users[userIndex].comments.findIndex(el => el.id === commentId);
+        const actualScore = users[userIndex].comments[commentIndex].score;
+        if(scoreUp){
+          users[userIndex].comments[commentIndex].score = actualScore + 1;
+        } else if(scoreDown && actualScore > 0){
+          users[userIndex].comments[commentIndex].score = actualScore - 1;
+        } else {
+          return false;
+        }
+      } else if( commentType === CommentTypeEnum.reply){
+        const userIndex = users.findIndex(el => el.id === userId);
+        const commentIndex = users[userIndex].comments.findIndex(el => el.id === commentId);
+        const replyIndex = users[userIndex].comments[commentIndex].replies.findIndex(el => el.id === replyId);
+        const actualScore = users[userIndex].comments[commentIndex].replies[replyIndex].score;
+        if(scoreUp){
+          users[userIndex].comments[commentIndex].replies[replyIndex].score = actualScore + 1;
+        } else if(scoreDown && actualScore !== 0){
+        users[userIndex].comments[commentIndex].replies[replyIndex].score = actualScore + - 1;
+        } else {
+          return false;
+        }
+      }
+        return true;
+    }
 
     getComments(): Comment[] {
       return this.comments;

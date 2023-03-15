@@ -538,7 +538,7 @@ export function renderComments(){
       tagContainer.appendChild(tagText);
       const commentDateContainer = document.createElement('div');
       commentDateContainer.classList.add('comment__date');
-      const commentDate = document.createTextNode(`${date}`);
+      const commentDate = document.createTextNode(`${TimeDiff(el.createdAt, new Date()).toString()}`);
       commentDateContainer.appendChild(commentDate);
 
       if(currentUserV2.id === el.user.id){

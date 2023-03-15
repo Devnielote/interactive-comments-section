@@ -179,6 +179,16 @@ button:hover {
   margin-right: .5rem;
 }
 
+.replies__container {
+  margin-top: 1rem;
+  padding-left: 1.5rem;
+  border-left: 2.5px solid var(--Light-gray);
+}
+
+.replies__container div {
+  padding: 0;
+}
+
 .reply__container {
   display: flex;
   align-items: center;

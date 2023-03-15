@@ -178,6 +178,11 @@ body {
   opacity: 50%;
 }
 
+.replyingTo__username {
+  font-weight: bold;
+  color: var(--Moderate-blue);
+}
+
 .deleteEditBtnContainer {
   display: flex;
   justify-content: space-around;

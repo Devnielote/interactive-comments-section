@@ -550,8 +550,11 @@ export function renderComments(){
       //User comment content
       const commentContentContainer = document.createElement('div');
       commentContentContainer.classList.add('comment__content');
+      const replyingTo = document.createElement('span');
+      replyingTo.classList.add('replyingTo__username');
+      replyingTo.innerText = `@${userComment.user.username} `;
       const comment = document.createTextNode(`${el.comment}`);
-      commentContentContainer.appendChild(comment);
+      commentContentContainer.append(replyingTo,comment);
 
       //User options menu
       const userOptionsMenu = document.createElement('div');
@@ -680,6 +683,7 @@ export function renderComments(){
   App.appendChild(commentContainer);
 })
 };
+
 const addCommentBox = () => {
   const addCommentContainer = document.createElement('div');
   addCommentContainer.classList.add('comment__container');

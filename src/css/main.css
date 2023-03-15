@@ -1,5 +1,5 @@
 :root {
---Moderate-blue: hsl(238, 40%, 52%);
+--Moderate-blue: rgb(84, 87, 182);
 --Soft-Red: hsl(358, 79%, 66%);
 --Light-grayish-blue: hsl(239, 57%, 85%);
 --Pale-red: hsl(357, 100%, 86%);
@@ -22,6 +22,11 @@
 body {
   background-color: var(--Very-ligh-gray);
   font-family: 'Rubik', sans-serif;
+}
+
+button:hover {
+  opacity: 50%;
+  cursor: pointer;
 }
 
 .app {
@@ -88,6 +93,7 @@ body {
 
 .comment__content {
   margin-top: 1rem;
+  word-break: break-all;
 }
 
 .comment__options {
@@ -152,6 +158,14 @@ body {
   background-color: var(--Very-ligh-gray);
   color: var(--Moderate-blue);
   font-weight: bold;
+}
+
+.score__container div:hover {
+  cursor: pointer;
+}
+
+.score__container div:hover img {
+  filter: invert(34%) sepia(98%) saturate(390%) hue-rotate(199deg) brightness(89%) contrast(96%);
 }
 
 .reply__button {
@@ -219,6 +233,7 @@ body {
   margin-bottom: 1rem;
   padding: 1rem;
   border: solid 1px var(--Light-gray);
+  overflow: hidden;
 }
 
 .profileAndBtn__container {

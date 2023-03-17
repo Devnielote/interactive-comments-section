@@ -1,5 +1,3 @@
-// import * as data from "./data.json";
-// import { User } from './users/user.model';
 import { createComment, updateComment, reply, eraseComment, existingComments } from "./comments/comment.services";
 import { faker } from '@faker-js/faker';
 import { App } from "./nodes";
@@ -16,7 +14,6 @@ import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
 import { mediaQueryList } from "./utils";
-// import { getViewport } from "./utils";
 
 if(!users){
    window.location.reload()
@@ -480,8 +477,6 @@ function handleViewportChange(mql:MediaQueryList) {
       })
     }
 
-    //If mobile score__container debería ir dentro de comment__options y comment__option no debería ir dentro de comment__profile, si no, dentro y al final de comment.
-
     if(false){
       if(currentUserV2.id === el.user.id){
         commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
@@ -817,8 +812,6 @@ function handleViewportChange(mql:MediaQueryList) {
 
       })
     }
-
-    //If mobile score__container debería ir dentro de comment__options y comment__option no debería ir dentro de comment__profile, si no, dentro y al final de comment.
 
     if(true){
       if(currentUserV2.id === el.user.id){

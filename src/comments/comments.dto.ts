@@ -1,5 +1,3 @@
-// import { User } from '../users/user.model';
-// import { User } from '../users/user.model';
 import { Comment } from './comment.model';
 
 export interface CreateCommentDto extends Comment {

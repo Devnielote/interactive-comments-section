@@ -467,7 +467,7 @@ function handleViewportChange(mql:MediaQueryList) {
             commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
           } else {
             userOptionsMenu.append(userReplyButton);
-            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer, userOptionsMenu)
           }
 
           replyComment.append(scoreContainer,commentUserInfoContainer,commentContentContainer);
@@ -493,7 +493,7 @@ function handleViewportChange(mql:MediaQueryList) {
         commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
       } else {
         userOptionsMenu.append(userReplyButton);
-        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer, userOptionsMenu)
       }
 
       comment.append(scoreContainer,commentUserInfoContainer, commentContentContainer);
@@ -782,9 +782,6 @@ function handleViewportChange(mql:MediaQueryList) {
         userReplyButton.classList.add('reply__button');
         const userReplyButtonText = document.createTextNode('Reply'); userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
 
-
-
-
         if(true){
           if(currentUserV2.id === el.user.id){
             commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
@@ -802,7 +799,7 @@ function handleViewportChange(mql:MediaQueryList) {
             commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
           } else {
             userOptionsMenu.append(userReplyButton);
-            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer, userOptionsMenu)
           }
 
           replyComment.append(scoreContainer,commentUserInfoContainer,commentContentContainer);
@@ -829,7 +826,7 @@ function handleViewportChange(mql:MediaQueryList) {
         commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
       } else {
         userOptionsMenu.append(userReplyButton);
-        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer, userOptionsMenu)
       }
       comment.append(scoreContainer,commentUserInfoContainer, commentContentContainer);
       commentContainer.append(comment,repliesContainer);

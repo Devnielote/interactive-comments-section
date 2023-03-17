@@ -368,3 +368,69 @@ button:hover {
   padding: 1rem;
   border: solid 1px var(--Light-gray);
 }
+
+
+@media (min-width: 700px) {
+
+.comment {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-template-rows: repeat(2,auto);
+  align-items: center;
+  gap: .5rem;
+  padding: 1rem;
+}
+
+.comment div:first-child {
+  grid-area: 1 / 1 / 3 / 1;
+
+}
+
+.comment div:nth-child(2) {
+  grid-area: 1 / 2 / 2 / 3
+}
+
+.comment div:nth-child(3) {
+  grid-area: 2 / 2 / 3 / 3
+}
+
+.score__container {
+  display: flex;
+  flex-direction: column;
+  width: 40px;
+  height: 110px;
+  margin-right: .5rem;
+  border-radius: .3rem;
+}
+
+.comment__date {
+  margin-left: 1rem;
+}
+
+.comment__options {
+  margin-top: 0;
+  margin-left: auto;
+}
+
+.reply__button {
+  display: flex;
+  align-items: center;
+}
+
+.comment__options img {
+  width: 20px;
+  height: 20px;
+}
+
+.comment__content {
+  width: 100%;
+  min-width: 572px;
+  max-width: 572px;
+  margin-top: 0;
+  padding-block: 2rem;
+}
+
+.replies__container {
+  padding-left: 5rem;
+}
+}

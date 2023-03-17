@@ -15,10 +15,13 @@ import "./css/main.css";
 import { Account } from "./accounts/Account";
 import { Comment, CommentTypeEnum } from "./comments/comment.model";
 import { currentUserV2, getAccountsFromStorage, setAccountsToStorage,users } from "./useLocalStorage";
+import { mediaQueryList } from "./utils";
+// import { getViewport } from "./utils";
 
 if(!users){
    window.location.reload()
 };
+
 
 const fetchComments = () => {
   return users.map(user => user.getComments()).reduce((a, b) => [...a, ...b], []);
@@ -27,43 +30,37 @@ const fetchComments = () => {
 const newCommentV2 = (comment: string) => {
   currentUserV2.createComment(comment);
   setAccountsToStorage(users);
-  renderComments();
-  addCommentBox();
+  handleViewportChange(mediaQueryList);
 }
 
 const updateCommentV2 = (commentId:Comment['id'], commentType: CommentTypeEnum, changes: string, userId?:Account['id'], replyId?:Comment['id'], users?:Account[]) => {
   if(commentType === CommentTypeEnum.comment){
     currentUserV2.updateComment(commentId, commentType ,changes);
     setAccountsToStorage(users);
-    renderComments()
-    addCommentBox()
+    handleViewportChange(mediaQueryList)
   } else if(commentType === CommentTypeEnum.reply){
     currentUserV2.updateComment(commentId,commentType,changes,userId,replyId);
     setAccountsToStorage(users);
-    renderComments()
-    addCommentBox()
+    handleViewportChange(mediaQueryList)
   }
 }
 
 const deleteCommentV2 = (id:number) => {
   currentUserV2.deleteComment(id);
   setAccountsToStorage(users);
-  renderComments()
-  addCommentBox()
+  handleViewportChange(mediaQueryList)
 }
 
 const deleteReplyV2 = (userId:number, commentId: number, replyId: number) => {
   currentUserV2.deleteReply(users,userId, commentId, replyId);
   setAccountsToStorage(users);
-  renderComments()
-  addCommentBox()
+  handleViewportChange(mediaQueryList)
 }
 
 const replyToCommentV2 = (db: Account[], comment: string, userId: Account['id'], commentId: Comment['id']) => {
   currentUserV2.replyToComment(users,comment,userId,commentId);
   setAccountsToStorage(users);
-  renderComments();
-  addCommentBox();
+  handleViewportChange(mediaQueryList);
 }
 
 const sortComments = () => {
@@ -132,558 +129,6 @@ const generateUpdateBox = (container: HTMLElement, updateBtn: HTMLElement, comme
   }
 }
 
-console.log(fetchComments());
-
-// const loadComments = () => {
-//   App.innerText = '';
-//   sortComments().forEach((el:Comment) => {
-//     const date = TimeDiff(el.createdAt, new Date()).toString();
-
-//     const commentContainer = document.createElement('div');
-//     commentContainer.className = 'comment__container';
-
-//     // profileInfo es el div que contiene la profilePic, username y fecha del comentario
-//     const profileInfo = document.createElement('div');
-//     profileInfo.className = 'comment__profile';
-//     const profilePic = document.createElement('img');
-//     profilePic.src = el.user.image;
-//     const profileUserName = document.createElement('p');
-//     const profileUserNameText = document.createTextNode(`${el.user.username}`);
-//     const tag = document.createElement('div');
-//     profileUserName.appendChild(profileUserNameText);
-//     const commentDate = document.createElement('p');
-//     const commentDateText = document.createTextNode(date);
-//     commentDate.appendChild(commentDateText);
-//     if(el.user.username === currentUserV2.name){
-//       const tagText = document.createElement('span');
-//       const text = document.createTextNode('you');
-//       tagText.append(text);
-//       tag.className = 'user__tag';
-//       tag.appendChild(tagText);
-//       profileInfo.append(profilePic,profileUserName,tag,commentDate);
-//     } else {
-//       profileInfo.append(profilePic,profileUserName,commentDate);
-//     }
-
-//     //Dentro de comment box guardamos el comentario
-//     const commentBox = document.createElement('div');
-//     commentBox.className = 'comment__box';
-//     const commentBoxText = document.createElement('p');
-//     commentBoxText.innerText = `${el.comment}`;
-//     commentBox.appendChild(commentBoxText);
-
-//     //score
-//     const scoreContainer = document.createElement('div');
-//     scoreContainer.className = 'score__container';
-//     const score = document.createElement('span');
-//     score.innerText = `${el.score}`;
-//     const scoreUp = document.createElement('img');
-//     scoreUp.src = `${scoreUpIcon}`;
-//     const scoreDown = document.createElement('img');
-//     scoreDown.src = `${scoreDownIcon}`;
-//     scoreContainer.append(scoreUp,score,scoreDown);
-
-//     //reply
-//     const replyContainer = document.createElement('div');
-//     replyContainer.className = 'reply__container';
-//     const reply = document.createElement('img');
-//     reply.src = `${replyIcon}`;
-//     const replyText = document.createElement('span');
-//     replyText.innerText = 'Reply';
-//     replyContainer.append(reply, replyText);
-//     replyContainer.addEventListener('click', () => {
-//       replyContainer.classList.add('disable__btn');
-//       generateReplyBox(replyScoreContainer, el.user.id, Number(el.id));
-//     })
-//     //reply and score container for mobiles
-//     const replyScoreContainer = document.createElement('div');
-//     replyScoreContainer.className = 'replyScore__container';
-//     replyScoreContainer.append(scoreContainer, replyContainer);
-
-//      //delete and edit buttons
-//     if(el.user.username === currentUserV2.name) {
-
-//     replyContainer.classList.add('disable');
-
-//       const deleteEditBtnContainer = document.createElement('div');
-//       deleteEditBtnContainer.className = 'deleteEditBtnContainer';
-//       const deleteBtn = document.createElement('div');
-//       const deleteBtnImg = document.createElement('img');
-//       deleteBtnImg.src = deleteIcon;
-//       deleteBtn.innerText = 'Delete';
-//       deleteBtn.appendChild(deleteBtnImg);
-//       deleteBtn.addEventListener('click', () => {
-//       document.documentElement.scrollTop = 0
-//       const modalBg = document.createElement('div');
-//       modalBg.className = 'modal__bg';
-//       const modalContainer = document.createElement('div');
-//       modalContainer.className = 'modal';
-//       const modalInfo = document.createElement('div');
-//       modalInfo.className = 'modal__info';
-//       const modalInfoTitle = document.createTextNode(`Delete comment`);
-//       const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
-//       const modalInfoTitleContainer = document.createElement('p');
-//       modalInfoTitleContainer.append(modalInfoTitle)
-//       const modalInfoTextContainer = document.createElement('p');
-//       modalInfoTextContainer.append(modalInfoText)
-//       const modalBtnContainer = document.createElement('div');
-//       modalBtnContainer.className = 'btn__container';
-//       const modalNoBtn = document.createElement('div');
-//       const modalYesBtn = document.createElement('div');
-
-//       modalNoBtn.innerText = 'NO, CANCEL';
-//       modalYesBtn.innerText = 'YES, DELETE';
-//       modalBtnContainer.append(modalNoBtn, modalYesBtn);
-//       modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
-//       modalContainer.append(modalInfo, modalBtnContainer);
-//       App.append(modalBg,modalContainer);
-
-//       modalYesBtn.addEventListener('click', () =>  {
-//         deleteCommentV2(Number(el.id));
-//       })
-//       modalNoBtn.addEventListener('click', () => {
-//         modalBg.className = 'disable';
-//         modalContainer.className = 'disable';
-//       })
-
-//     });
-
-//     const editBtn = document.createElement('div');
-//     const editBtnImg = document.createElement('img');
-//     editBtnImg.src = editIcon;
-//     editBtn.innerText = 'Edit';
-//     editBtn.appendChild(editBtnImg);
-//     editBtn.addEventListener('click', () => {
-//       commentBoxText.innerText = '';
-//       editBtn.classList.add('send__button');
-//       editBtn.innerText = 'UPDATE';
-//       generateUpdateBox(commentBoxText, editBtn, Number(el.id), el.comment);
-//     })
-//     deleteEditBtnContainer.append(deleteBtn, editBtn);
-
-//     replyScoreContainer.append(deleteEditBtnContainer);
-
-//     commentContainer.append(profileInfo,commentBox,replyScoreContainer);
-
-
-//     } else {
-//       commentContainer.append(profileInfo,commentBox, replyScoreContainer);
-//     }
-
-//     //Después de que todo cargue buscamos replies
-//     if(el.replies.length >= 1){
-//       el.replies.map(el => {
-
-//         const newReplyContainer = document.createElement('div');
-//         newReplyContainer.className = 'comment__container';
-
-//         const profileInfo = document.createElement('div');
-//         profileInfo.className = 'comment__profile';
-//         const profilePic = document.createElement('img');
-//         profilePic.src = el.user.image;
-//         const profileUserName = document.createElement('p');
-//         const profileUserNameText = document.createTextNode(`${el.user.username}`);
-//         profileUserName.appendChild(profileUserNameText);
-//         const commentDate = document.createElement('p');
-//         const commentDateText = document.createTextNode(TimeDiff(el.createdAt, new Date()).toString());
-//         commentDate.appendChild(commentDateText);
-//         profileInfo.append(profilePic,profileUserName,commentDate);
-
-//         const commentBox = document.createElement('div');
-//         commentBox.className = 'comment__box';
-//         const commentBoxText = document.createElement('p');
-//         commentBoxText.innerText = `${el.comment}`;
-//         commentBox.appendChild(commentBoxText);
-
-//         const commentBtns = document.createElement('div');
-//         commentBtns.className = 'replyScore__container';
-
-//         const scoreContainer = document.createElement('div');
-//         scoreContainer.className = 'score__container';
-//         const score = document.createElement('span');
-//         score.innerText = `${el.score}`;
-//         const scoreUp = document.createElement('img');
-//         scoreUp.src = `${scoreUpIcon}`;
-//         const scoreDown = document.createElement('img');
-//         scoreDown.src = `${scoreDownIcon}`;
-//         scoreContainer.append(scoreUp,score,scoreDown);
-
-//         const deleteEditBtnContainer = document.createElement('div');
-//         deleteEditBtnContainer.className = 'deleteEditBtnContainer';
-//         const deleteBtn = document.createElement('div');
-//         const deleteBtnImg = document.createElement('img');
-//         deleteBtnImg.src = deleteIcon;
-//         deleteBtn.innerText = 'Delete';
-//         deleteBtn.appendChild(deleteBtnImg);
-//         deleteBtn.addEventListener('click', () => {
-//         document.documentElement.scrollTop = 0
-//         const modalBg = document.createElement('div');
-//         modalBg.className = 'modal__bg';
-//         const modalContainer = document.createElement('div');
-//         modalContainer.className = 'modal';
-//         const modalInfo = document.createElement('div');
-//         modalInfo.className = 'modal__info';
-//         const modalInfoTitle = document.createTextNode(`Delete comment`);
-//         const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
-//         const modalInfoTitleContainer = document.createElement('p');
-//         modalInfoTitleContainer.append(modalInfoTitle)
-//         const modalInfoTextContainer = document.createElement('p');
-//         modalInfoTextContainer.append(modalInfoText)
-//         const modalBtnContainer = document.createElement('div');
-//         modalBtnContainer.className = 'btn__container';
-//         const modalNoBtn = document.createElement('div');
-//         const modalYesBtn = document.createElement('div');
-
-//         modalNoBtn.innerText = 'NO, CANCEL';
-//         modalYesBtn.innerText = 'YES, DELETE';
-//         modalBtnContainer.append(modalNoBtn, modalYesBtn);
-//         modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
-//         modalContainer.append(modalInfo, modalBtnContainer);
-//         App.append(modalBg,modalContainer);
-
-//         modalYesBtn.addEventListener('click', () =>  {
-//           deleteCommentV2(Number(el.id));
-//         })
-//         modalNoBtn.addEventListener('click', () => {
-//           modalBg.className = 'disable';
-//           modalContainer.className = 'disable';
-//         })
-//       });
-
-//       const editBtn = document.createElement('div');
-//       const editBtnImg = document.createElement('img');
-//       editBtnImg.src = editIcon;
-//       editBtn.innerText = 'Edit';
-//       editBtn.appendChild(editBtnImg);
-//       editBtn.addEventListener('click', () => {
-//         commentBoxText.innerText = '';
-//         editBtn.classList.add('send__button');
-//         editBtn.innerText = 'UPDATE';
-//         generateUpdateBox(commentBoxText, editBtn, Number(el.id), el.comment);
-//       })
-
-//         deleteEditBtnContainer.append(deleteBtn, editBtn);
-//         commentBtns.append(scoreContainer, deleteEditBtnContainer);
-//         newReplyContainer.append(profileInfo, commentBox,commentBtns)
-//         commentContainer.append(newReplyContainer);
-//       })
-//     }
-//     App.appendChild(commentContainer);
-//   })
-
-// }
-export function renderComments(){
-  App.innerText = '';
-  sortComments().forEach((el: Comment) => {
-  let date = TimeDiff(el.createdAt, new Date()).toString();
-
-  const commentContainer = document.createElement('div');
-  commentContainer.classList.add('comment__container');
-  const commentUserInfoContainer = document.createElement('div');
-  commentUserInfoContainer.classList.add('comment__profile');
-  const userPicContainer = document.createElement('img');
-  userPicContainer.src = el.user.image;
-  const usernameContainer = document.createElement('div');
-  usernameContainer.classList.add('comment__username')
-  const username = document.createTextNode(`${el.user.username}`);
-  usernameContainer.appendChild(username);
-  const tagContainer = document.createElement('div');
-  tagContainer.classList.add('user__tag');
-  const tagText = document.createTextNode('you');
-  tagContainer.appendChild(tagText);
-  const commentDateContainer = document.createElement('div');
-  commentDateContainer.classList.add('comment__date');
-  const commentDate = document.createTextNode(`${date}`);
-  commentDateContainer.appendChild(commentDate);
-
-  if(currentUserV2.id === el.user.id){
-    commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
-  } else {
-    commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer);
-  }
-
-  //User comment content
-  const commentContentContainer = document.createElement('div');
-  commentContentContainer.classList.add('comment__content');
-  const comment = document.createTextNode(`${el.comment}`);
-  commentContentContainer.appendChild(comment);
-
-  //User options menu
-  const userOptionsMenu = document.createElement('div');
-  userOptionsMenu.classList.add('comment__options');
-  const deleteEditContainer = document.createElement('div');
-  deleteEditContainer.classList.add('comment__deleteEdit');
-  //User edit button;
-  const userDeleteButtonIcon = document.createElement('img');
-  userDeleteButtonIcon.src = `${deleteIcon}`;
-  const userDeleteButton = document.createElement('button');
-  const userDeleteButtonText = document.createTextNode('Delete');
-  userDeleteButton.addEventListener('click', () => {
-    document.documentElement.scrollTop = 0
-      const modalBg = document.createElement('div');
-      modalBg.className = 'modal__bg';
-      const modalContainer = document.createElement('div');
-      modalContainer.className = 'modal';
-      const modalInfo = document.createElement('div');
-      modalInfo.className = 'modal__info';
-      const modalInfoTitle = document.createTextNode(`Delete comment`);
-      const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
-      const modalInfoTitleContainer = document.createElement('p');
-      modalInfoTitleContainer.append(modalInfoTitle)
-      const modalInfoTextContainer = document.createElement('p');
-      modalInfoTextContainer.append(modalInfoText)
-      const modalBtnContainer = document.createElement('div');
-      modalBtnContainer.className = 'btn__container';
-      const modalNoBtn = document.createElement('div');
-      const modalYesBtn = document.createElement('div');
-
-      modalNoBtn.innerText = 'NO, CANCEL';
-      modalYesBtn.innerText = 'YES, DELETE';
-      modalBtnContainer.append(modalNoBtn, modalYesBtn);
-      modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
-      modalContainer.append(modalInfo, modalBtnContainer);
-      App.append(modalBg,modalContainer);
-
-      modalYesBtn.addEventListener('click', () =>  {
-        deleteCommentV2(Number(el.id));
-      })
-      modalNoBtn.addEventListener('click', () => {
-        modalBg.className = 'disable';
-        modalContainer.className = 'disable';
-      })
-
-    });
-  userDeleteButton.append(userDeleteButtonIcon,userDeleteButtonText);
-  //User delete button
-  const userEditButtonIcon = document.createElement('img');
-  userEditButtonIcon.src = `${editIcon}`;
-  const userEditButton = document.createElement('button');
-  let userEditButtonText = document.createTextNode('Edit');
-  userEditButton.append(userEditButtonIcon,userEditButtonText);
-  deleteEditContainer.append(userDeleteButton, userEditButton)
-  userEditButton.addEventListener('click', () => {
-        commentContentContainer.innerHTML = '';
-        userEditButton.innerText = '';
-        deleteEditContainer.classList.add('comment__deleteEdit--active')
-        let activeUserEditButtonText = document.createTextNode('UPDATE')
-        userEditButton.append(activeUserEditButtonText);
-        generateUpdateBox(commentContentContainer, userEditButton, el.comment, Number(el.id), el.commentType,);
-  })
-  //User comment score
-  const scoreContainer = document.createElement('div');
-
-  const scoreUpContainer = document.createElement('div');
-  const scoreUp = document.createElement('img');
-  scoreUp.src = `${scoreUpIcon}`;
-  scoreUpContainer.appendChild(scoreUp);
-
-  const scoreDownContainer = document.createElement('div');
-  const scoreDown = document.createElement('img');
-  scoreDown.src = `${scoreDownIcon}`;
-  scoreDownContainer.appendChild(scoreDown)
-  scoreContainer.classList.add('score__container');
-  const score = document.createTextNode(`${el.score}`);
-  scoreUpContainer.addEventListener('click', () => {
-    currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,true,false);
-    setAccountsToStorage(users);
-    renderComments();
-    addCommentBox();
-  })
-  scoreDownContainer.addEventListener('click', () => {
-    if(el.score <= 0){
-      scoreDown.classList.add('disable__btn');
-    } else if( el.score > 0) {
-      currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,false,true);
-      setAccountsToStorage(users);
-      renderComments();
-      addCommentBox();
-      console.log('This thing stills working')
-    }
-  })
-  scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
-
-  //User comment reply
-  const userReplyButtonIcon = document.createElement('img');
-  userReplyButtonIcon.src = `${replyIcon}`;
-  const userReplyButton = document.createElement('button');
-  userReplyButton.classList.add('reply__button');
-  const userReplyButtonText = document.createTextNode('Reply');
-  userReplyButton.addEventListener('click', () => {
-    userReplyButton.setAttribute('disabled', 'true');
-    generateReplyBox(repliesContainer, el.user.id, Number(el.id));
-  })
-  userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
-
-  //If replies
-  const repliesContainer = document.createElement('div');
-  repliesContainer.classList.add('replies__container');
-
-  if(el.replies.length > 0) {
-    const userComment = el;
-    el.replies.map(el => {
-      console.log(el.comment)
-      const replyContainer = document.createElement('div');
-      replyContainer.classList.add('comment__container');
-      const commentUserInfoContainer = document.createElement('div');
-      commentUserInfoContainer.classList.add('comment__profile');
-      const userPicContainer = document.createElement('img');
-      userPicContainer.src = el.user.image;
-      const usernameContainer = document.createElement('div');
-      usernameContainer.classList.add('comment__username')
-      const username = document.createTextNode(`${el.user.username}`);
-      usernameContainer.appendChild(username);
-      const tagContainer = document.createElement('div');
-      tagContainer.classList.add('user__tag');
-      const tagText = document.createTextNode('you');
-      tagContainer.appendChild(tagText);
-      const commentDateContainer = document.createElement('div');
-      commentDateContainer.classList.add('comment__date');
-      const commentDate = document.createTextNode(`${TimeDiff(el.createdAt, new Date()).toString()}`);
-      commentDateContainer.appendChild(commentDate);
-
-      if(currentUserV2.id === el.user.id){
-        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
-      } else {
-        commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer);
-      }
-
-      //User comment content
-      const commentContentContainer = document.createElement('div');
-      commentContentContainer.classList.add('comment__content');
-      const replyingTo = document.createElement('span');
-      replyingTo.classList.add('replyingTo__username');
-      replyingTo.innerText = `@${userComment.user.username} `;
-      const comment = document.createTextNode(`${el.comment}`);
-      commentContentContainer.append(replyingTo,comment);
-
-      //User options menu
-      const userOptionsMenu = document.createElement('div');
-      userOptionsMenu.classList.add('comment__options');
-      const deleteEditContainer = document.createElement('div');
-      deleteEditContainer.classList.add('comment__deleteEdit');
-      //User edit button;
-      const userDeleteButtonIcon = document.createElement('img');
-      userDeleteButtonIcon.src = `${deleteIcon}`;
-      const userDeleteButton = document.createElement('button');
-      const userDeleteButtonText = document.createTextNode('Delete');
-      userDeleteButton.addEventListener('click', () => {
-        document.documentElement.scrollTop = 0
-        const modalBg = document.createElement('div');
-        modalBg.className = 'modal__bg';
-        const modalContainer = document.createElement('div');
-        modalContainer.className = 'modal';
-        const modalInfo = document.createElement('div');
-        modalInfo.className = 'modal__info';
-        const modalInfoTitle = document.createTextNode(`Delete comment`);
-        const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
-        const modalInfoTitleContainer = document.createElement('p');
-        modalInfoTitleContainer.append(modalInfoTitle)
-        const modalInfoTextContainer = document.createElement('p');
-        modalInfoTextContainer.append(modalInfoText)
-        const modalBtnContainer = document.createElement('div');
-        modalBtnContainer.className = 'btn__container';
-        const modalNoBtn = document.createElement('div');
-        const modalYesBtn = document.createElement('div');
-
-        modalNoBtn.innerText = 'NO, CANCEL';
-        modalYesBtn.innerText = 'YES, DELETE';
-        modalBtnContainer.append(modalNoBtn, modalYesBtn);
-        modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
-        modalContainer.append(modalInfo, modalBtnContainer);
-        App.append(modalBg,modalContainer);
-
-        modalYesBtn.addEventListener('click', () =>  {
-          deleteReplyV2(Number(userComment.user.id), Number(userComment.id), Number(el.id));
-        });
-        modalNoBtn.addEventListener('click', () => {
-          modalBg.className = 'disable';
-          modalContainer.className = 'disable';
-        })
-
-      })
-      userDeleteButton.append(userDeleteButtonIcon,userDeleteButtonText);
-      //User delete button
-      const userEditButtonIcon = document.createElement('img');
-      userEditButtonIcon.src = `${editIcon}`;
-      const userEditButton = document.createElement('button');
-      const userEditButtonText = document.createTextNode('Edit');
-      userEditButton.addEventListener('click', () => {
-          commentContentContainer.innerHTML = '';
-          userEditButton.innerText = '';
-          deleteEditContainer.classList.add('comment__deleteEdit--active')
-          let activeUserEditButtonText = document.createTextNode('UPDATE')
-          userEditButton.append(activeUserEditButtonText);
-          generateUpdateBox(commentContentContainer, userEditButton, el.comment, Number(userComment.id), el.commentType, userComment.user.id, el.id);
-      })
-      userEditButton.append(userEditButtonIcon,userEditButtonText);
-      deleteEditContainer.append(userDeleteButton, userEditButton);
-      //User comment score
-      const scoreContainer = document.createElement('div');
-
-      const scoreUpContainer = document.createElement('div');
-      const scoreUp = document.createElement('img');
-      scoreUp.src = `${scoreUpIcon}`;
-      scoreUpContainer.appendChild(scoreUp);
-      scoreUpContainer.addEventListener('click', () => {
-        currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,true,false, el.id);
-        setAccountsToStorage(users);
-        renderComments();
-        addCommentBox();
-      })
-
-      const scoreDownContainer = document.createElement('div');
-      const scoreDown = document.createElement('img');
-      scoreDown.src = `${scoreDownIcon}`;
-      scoreDownContainer.appendChild(scoreDown);
-      scoreDownContainer.addEventListener('click', () => {
-        if(el.score <= 0){
-          scoreDown.classList.add('disable__btn');
-        } else if( el.score > 0) {
-          currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,false,true, el.id);
-          setAccountsToStorage(users);
-          renderComments();
-          addCommentBox();
-          console.log('This thing stills working')
-        }
-      })
-
-
-      scoreContainer.classList.add('score__container');
-      const score = document.createTextNode(`${el.score}`);
-      scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
-      //User comment reply
-      const userReplyButtonIcon = document.createElement('img');
-      userReplyButtonIcon.src = `${replyIcon}`;
-      const userReplyButton = document.createElement('button');
-      userReplyButton.classList.add('reply__button');
-      const userReplyButtonText = document.createTextNode('Reply'); userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
-
-      if(currentUserV2.id === el.user.id){
-        userOptionsMenu.append(scoreContainer,deleteEditContainer);
-      } else {
-        userOptionsMenu.append(scoreContainer, userReplyButton);
-      }
-
-      replyContainer.append(commentUserInfoContainer,commentContentContainer, userOptionsMenu);
-      repliesContainer.appendChild(replyContainer);
-    })
-  }
-
-  //If mobile
-  if(currentUserV2.id === el.user.id){
-    userOptionsMenu.append(scoreContainer,deleteEditContainer);
-  } else {
-    userOptionsMenu.append(scoreContainer, userReplyButton);
-  }
-
-
-
-  commentContainer.append(commentUserInfoContainer, commentContentContainer,userOptionsMenu,repliesContainer);
-
-  App.appendChild(commentContainer);
-})
-};
-
 const addCommentBox = () => {
   const addCommentContainer = document.createElement('div');
   addCommentContainer.classList.add('comment__container');
@@ -729,6 +174,679 @@ const addCommentBox = () => {
   return App.appendChild(addCommentContainer);
 }
 
-// loadComments();
-renderComments();
-addCommentBox();
+function handleViewportChange(mql:MediaQueryList) {
+  if(mql.matches){
+    App.innerText = '';
+    sortComments().forEach((el: Comment) => {
+    let date = TimeDiff(el.createdAt, new Date()).toString();
+
+    const commentContainer = document.createElement('div');
+    commentContainer.classList.add('comment__container');
+    const comment = document.createElement('div');
+    const containerForScoreInDesktop = document.createElement('div');
+    containerForScoreInDesktop.classList.add('desktop__score');
+    comment.classList.add('comment');
+
+    const commentUserInfoContainer = document.createElement('div');
+    commentUserInfoContainer.classList.add('comment__profile');
+    const userPicContainer = document.createElement('img');
+    userPicContainer.src = el.user.image;
+    const usernameContainer = document.createElement('div');
+    usernameContainer.classList.add('comment__username')
+    const username = document.createTextNode(`${el.user.username}`);
+    usernameContainer.appendChild(username);
+    const tagContainer = document.createElement('div');
+    tagContainer.classList.add('user__tag');
+    const tagText = document.createTextNode('you');
+    tagContainer.appendChild(tagText);
+    const commentDateContainer = document.createElement('div');
+    commentDateContainer.classList.add('comment__date');
+    const commentDate = document.createTextNode(`${date}`);
+    commentDateContainer.appendChild(commentDate);
+
+    //User comment content
+    const commentContentContainer = document.createElement('div');
+    commentContentContainer.classList.add('comment__content');
+    const commentText = document.createTextNode(`${el.comment}`);
+    commentContentContainer.appendChild(commentText);
+
+    //User options menu
+    const userOptionsMenu = document.createElement('div');
+    userOptionsMenu.classList.add('comment__options');
+    const deleteEditContainer = document.createElement('div');
+    deleteEditContainer.classList.add('comment__deleteEdit');
+    //User edit button;
+    const userDeleteButtonIcon = document.createElement('img');
+    userDeleteButtonIcon.src = `${deleteIcon}`;
+    const userDeleteButton = document.createElement('button');
+    const userDeleteButtonText = document.createTextNode('Delete');
+    userDeleteButton.addEventListener('click', () => {
+      document.documentElement.scrollTop = 0
+        const modalBg = document.createElement('div');
+        modalBg.className = 'modal__bg';
+        const modalContainer = document.createElement('div');
+        modalContainer.className = 'modal';
+        const modalInfo = document.createElement('div');
+        modalInfo.className = 'modal__info';
+        const modalInfoTitle = document.createTextNode(`Delete comment`);
+        const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
+        const modalInfoTitleContainer = document.createElement('p');
+        modalInfoTitleContainer.append(modalInfoTitle)
+        const modalInfoTextContainer = document.createElement('p');
+        modalInfoTextContainer.append(modalInfoText)
+        const modalBtnContainer = document.createElement('div');
+        modalBtnContainer.className = 'btn__container';
+        const modalNoBtn = document.createElement('div');
+        const modalYesBtn = document.createElement('div');
+
+        modalNoBtn.innerText = 'NO, CANCEL';
+        modalYesBtn.innerText = 'YES, DELETE';
+        modalBtnContainer.append(modalNoBtn, modalYesBtn);
+        modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
+        modalContainer.append(modalInfo, modalBtnContainer);
+        App.append(modalBg,modalContainer);
+
+        modalYesBtn.addEventListener('click', () =>  {
+          deleteCommentV2(Number(el.id));
+        })
+        modalNoBtn.addEventListener('click', () => {
+          modalBg.className = 'disable';
+          modalContainer.className = 'disable';
+        })
+
+      });
+    userDeleteButton.append(userDeleteButtonIcon,userDeleteButtonText);
+    //User delete button
+    const userEditButtonIcon = document.createElement('img');
+    userEditButtonIcon.src = `${editIcon}`;
+    const userEditButton = document.createElement('button');
+    let userEditButtonText = document.createTextNode('Edit');
+    userEditButton.append(userEditButtonIcon,userEditButtonText);
+    deleteEditContainer.append(userDeleteButton, userEditButton)
+    userEditButton.addEventListener('click', () => {
+          commentContentContainer.innerHTML = '';
+          userEditButton.innerText = '';
+          deleteEditContainer.classList.add('comment__deleteEdit--active')
+          let activeUserEditButtonText = document.createTextNode('UPDATE')
+          userEditButton.append(activeUserEditButtonText);
+          generateUpdateBox(commentContentContainer, userEditButton, el.comment, Number(el.id), el.commentType,);
+    })
+    //User comment score
+    const scoreContainer = document.createElement('div');
+
+    const scoreUpContainer = document.createElement('div');
+    const scoreUp = document.createElement('img');
+    scoreUp.src = `${scoreUpIcon}`;
+    scoreUpContainer.appendChild(scoreUp);
+
+    const scoreDownContainer = document.createElement('div');
+    const scoreDown = document.createElement('img');
+    scoreDown.src = `${scoreDownIcon}`;
+    scoreDownContainer.appendChild(scoreDown)
+    scoreContainer.classList.add('score__container');
+    const score = document.createTextNode(`${el.score}`);
+    scoreUpContainer.addEventListener('click', () => {
+      currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,true,false);
+      setAccountsToStorage(users);
+      handleViewportChange(mediaQueryList);
+    })
+    scoreDownContainer.addEventListener('click', () => {
+      if(el.score <= 0){
+        scoreDown.classList.add('disable__btn');
+      } else if( el.score > 0) {
+        currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,false,true);
+        setAccountsToStorage(users);
+        handleViewportChange(mediaQueryList);
+        console.log('This thing stills working')
+      }
+    })
+    scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
+
+    //User comment reply
+    const userReplyButtonIcon = document.createElement('img');
+    userReplyButtonIcon.src = `${replyIcon}`;
+    const userReplyButton = document.createElement('button');
+    userReplyButton.classList.add('reply__button');
+    const userReplyButtonText = document.createTextNode('Reply');
+    userReplyButton.addEventListener('click', () => {
+      userReplyButton.setAttribute('disabled', 'true');
+      generateReplyBox(repliesContainer, el.user.id, Number(el.id));
+    })
+    userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
+
+    //If replies
+    const repliesContainer = document.createElement('div');
+    repliesContainer.classList.add('replies__container');
+
+    if(el.replies.length > 0) {
+      const userComment = el;
+      el.replies.map(el => {
+        console.log(el.comment)
+        const replyContainer = document.createElement('div');
+        replyContainer.classList.add('comment__container');
+        const replyComment = document.createElement('div');
+        replyComment.classList.add('comment');
+
+        const commentUserInfoContainer = document.createElement('div');
+        commentUserInfoContainer.classList.add('comment__profile');
+        const userPicContainer = document.createElement('img');
+        userPicContainer.src = el.user.image;
+        const usernameContainer = document.createElement('div');
+        usernameContainer.classList.add('comment__username')
+        const username = document.createTextNode(`${el.user.username}`);
+        usernameContainer.appendChild(username);
+        const tagContainer = document.createElement('div');
+        tagContainer.classList.add('user__tag');
+        const tagText = document.createTextNode('you');
+        tagContainer.appendChild(tagText);
+        const commentDateContainer = document.createElement('div');
+        commentDateContainer.classList.add('comment__date');
+        const commentDate = document.createTextNode(`${TimeDiff(el.createdAt, new Date()).toString()}`);
+        commentDateContainer.appendChild(commentDate);
+
+        //User comment content
+        const commentContentContainer = document.createElement('div');
+        commentContentContainer.classList.add('comment__content');
+        const replyingTo = document.createElement('span');
+        replyingTo.classList.add('replyingTo__username');
+        replyingTo.innerText = `@${userComment.user.username} `;
+        const comment = document.createTextNode(`${el.comment}`);
+        commentContentContainer.append(replyingTo,comment);
+
+        //User options menu
+        const userOptionsMenu = document.createElement('div');
+        userOptionsMenu.classList.add('comment__options');
+        const deleteEditContainer = document.createElement('div');
+        deleteEditContainer.classList.add('comment__deleteEdit');
+        //User edit button;
+        const userDeleteButtonIcon = document.createElement('img');
+        userDeleteButtonIcon.src = `${deleteIcon}`;
+        const userDeleteButton = document.createElement('button');
+        const userDeleteButtonText = document.createTextNode('Delete');
+        userDeleteButton.addEventListener('click', () => {
+          document.documentElement.scrollTop = 0
+          const modalBg = document.createElement('div');
+          modalBg.className = 'modal__bg';
+          const modalContainer = document.createElement('div');
+          modalContainer.className = 'modal';
+          const modalInfo = document.createElement('div');
+          modalInfo.className = 'modal__info';
+          const modalInfoTitle = document.createTextNode(`Delete comment`);
+          const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
+          const modalInfoTitleContainer = document.createElement('p');
+          modalInfoTitleContainer.append(modalInfoTitle)
+          const modalInfoTextContainer = document.createElement('p');
+          modalInfoTextContainer.append(modalInfoText)
+          const modalBtnContainer = document.createElement('div');
+          modalBtnContainer.className = 'btn__container';
+          const modalNoBtn = document.createElement('div');
+          const modalYesBtn = document.createElement('div');
+
+          modalNoBtn.innerText = 'NO, CANCEL';
+          modalYesBtn.innerText = 'YES, DELETE';
+          modalBtnContainer.append(modalNoBtn, modalYesBtn);
+          modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
+          modalContainer.append(modalInfo, modalBtnContainer);
+          App.append(modalBg,modalContainer);
+
+          modalYesBtn.addEventListener('click', () =>  {
+            deleteReplyV2(Number(userComment.user.id), Number(userComment.id), Number(el.id));
+          });
+          modalNoBtn.addEventListener('click', () => {
+            modalBg.className = 'disable';
+            modalContainer.className = 'disable';
+          })
+
+        })
+        userDeleteButton.append(userDeleteButtonIcon,userDeleteButtonText);
+        //User delete button
+        const userEditButtonIcon = document.createElement('img');
+        userEditButtonIcon.src = `${editIcon}`;
+        const userEditButton = document.createElement('button');
+        const userEditButtonText = document.createTextNode('Edit');
+        userEditButton.addEventListener('click', () => {
+            commentContentContainer.innerHTML = '';
+            userEditButton.innerText = '';
+            deleteEditContainer.classList.add('comment__deleteEdit--active')
+            let activeUserEditButtonText = document.createTextNode('UPDATE')
+            userEditButton.append(activeUserEditButtonText);
+            generateUpdateBox(commentContentContainer, userEditButton, el.comment, Number(userComment.id), el.commentType, userComment.user.id, el.id);
+        })
+        userEditButton.append(userEditButtonIcon,userEditButtonText);
+        deleteEditContainer.append(userDeleteButton, userEditButton);
+        //User comment score
+        const scoreContainer = document.createElement('div');
+
+        const scoreUpContainer = document.createElement('div');
+        const scoreUp = document.createElement('img');
+        scoreUp.src = `${scoreUpIcon}`;
+        scoreUpContainer.appendChild(scoreUp);
+        scoreUpContainer.addEventListener('click', () => {
+          currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,true,false, el.id);
+          setAccountsToStorage(users);
+          handleViewportChange(mediaQueryList);
+        })
+
+        const scoreDownContainer = document.createElement('div');
+        const scoreDown = document.createElement('img');
+        scoreDown.src = `${scoreDownIcon}`;
+        scoreDownContainer.appendChild(scoreDown);
+        scoreDownContainer.addEventListener('click', () => {
+          if(el.score <= 0){
+            scoreDown.classList.add('disable__btn');
+          } else if( el.score > 0) {
+            currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,false,true, el.id);
+            setAccountsToStorage(users);
+            handleViewportChange(mediaQueryList);
+            console.log('This thing stills working')
+          }
+        })
+
+
+        scoreContainer.classList.add('score__container');
+        const score = document.createTextNode(`${el.score}`);
+        scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
+        //User comment reply
+        const userReplyButtonIcon = document.createElement('img');
+        userReplyButtonIcon.src = `${replyIcon}`;
+        const userReplyButton = document.createElement('button');
+        userReplyButton.classList.add('reply__button');
+        const userReplyButtonText = document.createTextNode('Reply'); userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
+
+        if(false){
+          if(currentUserV2.id === el.user.id){
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
+            userOptionsMenu.append(scoreContainer,deleteEditContainer);
+          } else {
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer);
+            userOptionsMenu.append(scoreContainer, userReplyButton);
+          }
+          replyComment.append(commentUserInfoContainer,commentContentContainer, userOptionsMenu);
+          replyContainer.append(replyComment);
+          repliesContainer.append(replyContainer);
+        } else {
+          if(currentUserV2.id === el.user.id){
+            userOptionsMenu.append(deleteEditContainer);
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+          } else {
+            userOptionsMenu.append(userReplyButton);
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+          }
+
+          replyComment.append(scoreContainer,commentUserInfoContainer,commentContentContainer);
+          replyContainer.append(replyComment);
+          repliesContainer.append(replyContainer);
+        }
+      })
+    }
+
+    //If mobile score__container debería ir dentro de comment__options y comment__option no debería ir dentro de comment__profile, si no, dentro y al final de comment.
+
+    if(false){
+      if(currentUserV2.id === el.user.id){
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
+        userOptionsMenu.append(scoreContainer,deleteEditContainer);
+      } else {
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer);
+        userOptionsMenu.append(scoreContainer, userReplyButton);
+      }
+      comment.append(commentUserInfoContainer, commentContentContainer, userOptionsMenu);
+      commentContainer.append(comment,repliesContainer);
+    } else {
+      if(currentUserV2.id === el.user.id){
+        userOptionsMenu.append(deleteEditContainer);
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+      } else {
+        userOptionsMenu.append(userReplyButton);
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+      }
+
+      comment.append(scoreContainer,commentUserInfoContainer, commentContentContainer);
+      commentContainer.append(comment,repliesContainer);
+      console.log('Vista de tablet')
+      App.appendChild(commentContainer);
+    }
+  })
+    } else {
+      App.innerText = '';
+    sortComments().forEach((el: Comment) => {
+    let date = TimeDiff(el.createdAt, new Date()).toString();
+
+    const commentContainer = document.createElement('div');
+    commentContainer.classList.add('comment__container');
+    const comment = document.createElement('div');
+    const containerForScoreInDesktop = document.createElement('div');
+    containerForScoreInDesktop.classList.add('desktop__score');
+    comment.classList.add('comment');
+
+    const commentUserInfoContainer = document.createElement('div');
+    commentUserInfoContainer.classList.add('comment__profile');
+    const userPicContainer = document.createElement('img');
+    userPicContainer.src = el.user.image;
+    const usernameContainer = document.createElement('div');
+    usernameContainer.classList.add('comment__username')
+    const username = document.createTextNode(`${el.user.username}`);
+    usernameContainer.appendChild(username);
+    const tagContainer = document.createElement('div');
+    tagContainer.classList.add('user__tag');
+    const tagText = document.createTextNode('you');
+    tagContainer.appendChild(tagText);
+    const commentDateContainer = document.createElement('div');
+    commentDateContainer.classList.add('comment__date');
+    const commentDate = document.createTextNode(`${date}`);
+    commentDateContainer.appendChild(commentDate);
+
+    //User comment content
+    const commentContentContainer = document.createElement('div');
+    commentContentContainer.classList.add('comment__content');
+    const commentText = document.createTextNode(`${el.comment}`);
+    commentContentContainer.appendChild(commentText);
+
+    //User options menu
+    const userOptionsMenu = document.createElement('div');
+    userOptionsMenu.classList.add('comment__options');
+    const deleteEditContainer = document.createElement('div');
+    deleteEditContainer.classList.add('comment__deleteEdit');
+    //User edit button;
+    const userDeleteButtonIcon = document.createElement('img');
+    userDeleteButtonIcon.src = `${deleteIcon}`;
+    const userDeleteButton = document.createElement('button');
+    const userDeleteButtonText = document.createTextNode('Delete');
+    userDeleteButton.addEventListener('click', () => {
+      document.documentElement.scrollTop = 0
+        const modalBg = document.createElement('div');
+        modalBg.className = 'modal__bg';
+        const modalContainer = document.createElement('div');
+        modalContainer.className = 'modal';
+        const modalInfo = document.createElement('div');
+        modalInfo.className = 'modal__info';
+        const modalInfoTitle = document.createTextNode(`Delete comment`);
+        const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
+        const modalInfoTitleContainer = document.createElement('p');
+        modalInfoTitleContainer.append(modalInfoTitle)
+        const modalInfoTextContainer = document.createElement('p');
+        modalInfoTextContainer.append(modalInfoText)
+        const modalBtnContainer = document.createElement('div');
+        modalBtnContainer.className = 'btn__container';
+        const modalNoBtn = document.createElement('div');
+        const modalYesBtn = document.createElement('div');
+
+        modalNoBtn.innerText = 'NO, CANCEL';
+        modalYesBtn.innerText = 'YES, DELETE';
+        modalBtnContainer.append(modalNoBtn, modalYesBtn);
+        modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
+        modalContainer.append(modalInfo, modalBtnContainer);
+        App.append(modalBg,modalContainer);
+
+        modalYesBtn.addEventListener('click', () =>  {
+          deleteCommentV2(Number(el.id));
+        })
+        modalNoBtn.addEventListener('click', () => {
+          modalBg.className = 'disable';
+          modalContainer.className = 'disable';
+        })
+
+      });
+    userDeleteButton.append(userDeleteButtonIcon,userDeleteButtonText);
+    //User delete button
+    const userEditButtonIcon = document.createElement('img');
+    userEditButtonIcon.src = `${editIcon}`;
+    const userEditButton = document.createElement('button');
+    let userEditButtonText = document.createTextNode('Edit');
+    userEditButton.append(userEditButtonIcon,userEditButtonText);
+    deleteEditContainer.append(userDeleteButton, userEditButton)
+    userEditButton.addEventListener('click', () => {
+          commentContentContainer.innerHTML = '';
+          userEditButton.innerText = '';
+          deleteEditContainer.classList.add('comment__deleteEdit--active')
+          let activeUserEditButtonText = document.createTextNode('UPDATE')
+          userEditButton.append(activeUserEditButtonText);
+          generateUpdateBox(commentContentContainer, userEditButton, el.comment, Number(el.id), el.commentType,);
+    })
+    //User comment score
+    const scoreContainer = document.createElement('div');
+
+    const scoreUpContainer = document.createElement('div');
+    const scoreUp = document.createElement('img');
+    scoreUp.src = `${scoreUpIcon}`;
+    scoreUpContainer.appendChild(scoreUp);
+
+    const scoreDownContainer = document.createElement('div');
+    const scoreDown = document.createElement('img');
+    scoreDown.src = `${scoreDownIcon}`;
+    scoreDownContainer.appendChild(scoreDown)
+    scoreContainer.classList.add('score__container');
+    const score = document.createTextNode(`${el.score}`);
+    scoreUpContainer.addEventListener('click', () => {
+      currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,true,false);
+      setAccountsToStorage(users);
+      handleViewportChange(mediaQueryList);
+
+    })
+    scoreDownContainer.addEventListener('click', () => {
+      if(el.score <= 0){
+        scoreDown.classList.add('disable__btn');
+      } else if( el.score > 0) {
+        currentUserV2.scoreComment(el.user.id,Number(el.id),el.commentType,false,true);
+        setAccountsToStorage(users);
+        handleViewportChange(mediaQueryList);
+
+        console.log('This thing stills working')
+      }
+    })
+    scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
+
+    //User comment reply
+    const userReplyButtonIcon = document.createElement('img');
+    userReplyButtonIcon.src = `${replyIcon}`;
+    const userReplyButton = document.createElement('button');
+    userReplyButton.classList.add('reply__button');
+    const userReplyButtonText = document.createTextNode('Reply');
+    userReplyButton.addEventListener('click', () => {
+      userReplyButton.setAttribute('disabled', 'true');
+      generateReplyBox(repliesContainer, el.user.id, Number(el.id));
+    })
+    userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
+
+    //If replies
+    const repliesContainer = document.createElement('div');
+    repliesContainer.classList.add('replies__container');
+
+    if(el.replies.length > 0) {
+      const userComment = el;
+      el.replies.map(el => {
+        console.log(el.comment)
+        const replyContainer = document.createElement('div');
+        replyContainer.classList.add('comment__container');
+        const replyComment = document.createElement('div');
+        replyComment.classList.add('comment');
+
+        const commentUserInfoContainer = document.createElement('div');
+        commentUserInfoContainer.classList.add('comment__profile');
+        const userPicContainer = document.createElement('img');
+        userPicContainer.src = el.user.image;
+        const usernameContainer = document.createElement('div');
+        usernameContainer.classList.add('comment__username')
+        const username = document.createTextNode(`${el.user.username}`);
+        usernameContainer.appendChild(username);
+        const tagContainer = document.createElement('div');
+        tagContainer.classList.add('user__tag');
+        const tagText = document.createTextNode('you');
+        tagContainer.appendChild(tagText);
+        const commentDateContainer = document.createElement('div');
+        commentDateContainer.classList.add('comment__date');
+        const commentDate = document.createTextNode(`${TimeDiff(el.createdAt, new Date()).toString()}`);
+        commentDateContainer.appendChild(commentDate);
+
+        //User comment content
+        const commentContentContainer = document.createElement('div');
+        commentContentContainer.classList.add('comment__content');
+        const replyingTo = document.createElement('span');
+        replyingTo.classList.add('replyingTo__username');
+        replyingTo.innerText = `@${userComment.user.username} `;
+        const comment = document.createTextNode(`${el.comment}`);
+        commentContentContainer.append(replyingTo,comment);
+
+        //User options menu
+        const userOptionsMenu = document.createElement('div');
+        userOptionsMenu.classList.add('comment__options');
+        const deleteEditContainer = document.createElement('div');
+        deleteEditContainer.classList.add('comment__deleteEdit');
+        //User edit button;
+        const userDeleteButtonIcon = document.createElement('img');
+        userDeleteButtonIcon.src = `${deleteIcon}`;
+        const userDeleteButton = document.createElement('button');
+        const userDeleteButtonText = document.createTextNode('Delete');
+        userDeleteButton.addEventListener('click', () => {
+          document.documentElement.scrollTop = 0
+          const modalBg = document.createElement('div');
+          modalBg.className = 'modal__bg';
+          const modalContainer = document.createElement('div');
+          modalContainer.className = 'modal';
+          const modalInfo = document.createElement('div');
+          modalInfo.className = 'modal__info';
+          const modalInfoTitle = document.createTextNode(`Delete comment`);
+          const modalInfoText = document.createTextNode(`Are you sure you want to delete this comment? This will remove the comment and can't be undone.`);
+          const modalInfoTitleContainer = document.createElement('p');
+          modalInfoTitleContainer.append(modalInfoTitle)
+          const modalInfoTextContainer = document.createElement('p');
+          modalInfoTextContainer.append(modalInfoText)
+          const modalBtnContainer = document.createElement('div');
+          modalBtnContainer.className = 'btn__container';
+          const modalNoBtn = document.createElement('div');
+          const modalYesBtn = document.createElement('div');
+
+          modalNoBtn.innerText = 'NO, CANCEL';
+          modalYesBtn.innerText = 'YES, DELETE';
+          modalBtnContainer.append(modalNoBtn, modalYesBtn);
+          modalInfo.append(modalInfoTitleContainer, modalInfoTextContainer);
+          modalContainer.append(modalInfo, modalBtnContainer);
+          App.append(modalBg,modalContainer);
+
+          modalYesBtn.addEventListener('click', () =>  {
+            deleteReplyV2(Number(userComment.user.id), Number(userComment.id), Number(el.id));
+          });
+          modalNoBtn.addEventListener('click', () => {
+            modalBg.className = 'disable';
+            modalContainer.className = 'disable';
+          })
+
+        })
+        userDeleteButton.append(userDeleteButtonIcon,userDeleteButtonText);
+        //User delete button
+        const userEditButtonIcon = document.createElement('img');
+        userEditButtonIcon.src = `${editIcon}`;
+        const userEditButton = document.createElement('button');
+        const userEditButtonText = document.createTextNode('Edit');
+        userEditButton.addEventListener('click', () => {
+            commentContentContainer.innerHTML = '';
+            userEditButton.innerText = '';
+            deleteEditContainer.classList.add('comment__deleteEdit--active')
+            let activeUserEditButtonText = document.createTextNode('UPDATE')
+            userEditButton.append(activeUserEditButtonText);
+            generateUpdateBox(commentContentContainer, userEditButton, el.comment, Number(userComment.id), el.commentType, userComment.user.id, el.id);
+        })
+        userEditButton.append(userEditButtonIcon,userEditButtonText);
+        deleteEditContainer.append(userDeleteButton, userEditButton);
+        //User comment score
+        const scoreContainer = document.createElement('div');
+
+        const scoreUpContainer = document.createElement('div');
+        const scoreUp = document.createElement('img');
+        scoreUp.src = `${scoreUpIcon}`;
+        scoreUpContainer.appendChild(scoreUp);
+        scoreUpContainer.addEventListener('click', () => {
+          currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,true,false, el.id);
+          setAccountsToStorage(users);
+          handleViewportChange(mediaQueryList);
+        })
+
+        const scoreDownContainer = document.createElement('div');
+        const scoreDown = document.createElement('img');
+        scoreDown.src = `${scoreDownIcon}`;
+        scoreDownContainer.appendChild(scoreDown);
+        scoreDownContainer.addEventListener('click', () => {
+          if(el.score <= 0){
+            scoreDown.classList.add('disable__btn');
+          } else if( el.score > 0) {
+            currentUserV2.scoreComment(Number(userComment.user.id),Number(userComment.id),el.commentType,false,true, el.id);
+            setAccountsToStorage(users);
+            handleViewportChange(mediaQueryList)
+            console.log('This thing stills working')
+          }
+        })
+
+
+        scoreContainer.classList.add('score__container');
+        const score = document.createTextNode(`${el.score}`);
+        scoreContainer.append(scoreUpContainer,score, scoreDownContainer);
+        //User comment reply
+        const userReplyButtonIcon = document.createElement('img');
+        userReplyButtonIcon.src = `${replyIcon}`;
+        const userReplyButton = document.createElement('button');
+        userReplyButton.classList.add('reply__button');
+        const userReplyButtonText = document.createTextNode('Reply'); userReplyButton.append(userReplyButtonIcon, userReplyButtonText);
+
+
+
+
+        if(true){
+          if(currentUserV2.id === el.user.id){
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
+            userOptionsMenu.append(scoreContainer,deleteEditContainer);
+          } else {
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer);
+            userOptionsMenu.append(scoreContainer, userReplyButton);
+          }
+          replyComment.append(commentUserInfoContainer,commentContentContainer, userOptionsMenu);
+          replyContainer.append(replyComment);
+          repliesContainer.append(replyContainer);
+        } else {
+          if(currentUserV2.id === el.user.id){
+            userOptionsMenu.append(deleteEditContainer);
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+          } else {
+            userOptionsMenu.append(userReplyButton);
+            commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+          }
+
+          replyComment.append(scoreContainer,commentUserInfoContainer,commentContentContainer);
+          replyContainer.append(replyComment);
+          repliesContainer.append(replyContainer);
+        }
+
+      })
+    }
+
+    //If mobile score__container debería ir dentro de comment__options y comment__option no debería ir dentro de comment__profile, si no, dentro y al final de comment.
+
+    if(true){
+      if(currentUserV2.id === el.user.id){
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer);
+        userOptionsMenu.append(scoreContainer,deleteEditContainer);
+      } else {
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, commentDateContainer);
+        userOptionsMenu.append(scoreContainer, userReplyButton);
+      }
+      comment.append(commentUserInfoContainer, commentContentContainer, userOptionsMenu);
+      commentContainer.append(comment,repliesContainer);
+    } else {
+      if(currentUserV2.id === el.user.id){
+        userOptionsMenu.append(deleteEditContainer);
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+      } else {
+        userOptionsMenu.append(userReplyButton);
+        commentUserInfoContainer.append(userPicContainer, usernameContainer, tagContainer, commentDateContainer, userOptionsMenu)
+      }
+      comment.append(scoreContainer,commentUserInfoContainer, commentContentContainer);
+      commentContainer.append(comment,repliesContainer);
+      console.log('Vista de tablet')
+    }
+    App.appendChild(commentContainer);
+  })
+    }
+    addCommentBox();
+}
+
+handleViewportChange(mediaQueryList);
+mediaQueryList.addEventListener("change", handleViewportChange);
